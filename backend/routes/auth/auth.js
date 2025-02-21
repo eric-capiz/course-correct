@@ -103,7 +103,7 @@ router.post("/login", async (req, res) => {
       expiresIn: "24h",
     });
 
-    res.json({ token, isAdmin: user.role === "admin" });
+    res.json({ token });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server error" });
