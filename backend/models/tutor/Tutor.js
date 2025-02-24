@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const AvailabilitySchema = new mongoose.Schema(
   {
     tutor: {
@@ -7,14 +6,11 @@ const AvailabilitySchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    subject: {
+    day: {
       type: String,
       required: true,
-      enum: function () {
-        return this.tutor.subjects;
-      },
     },
-    day: {
+    subject: {
       type: String,
       required: true,
     },
@@ -26,9 +22,9 @@ const AvailabilitySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    duration: {
-      type: Number,
-      required: true,
+    isActive: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

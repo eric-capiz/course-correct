@@ -2,6 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./routes/auth/auth");
+const tutorRoutes = require("./routes/tutor/tutor");
+const bookingRoutes = require("./routes/tutorBooking/tutorBooking");
+const studyGroupRoutes = require("./routes/studyGroup/studyGroup");
 require("dotenv").config();
 
 const app = express();
@@ -17,9 +20,13 @@ app.get("/", (req, res) => {
   res.json({ message: "Course Correct API is up and running!" });
 });
 
-//Routes
+// Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/tutors", tutorRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/studyGroups", studyGroupRoutes);
 
+// MongoDB connection
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB"))

@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const TutorBooking = require("../../models/tutor/TutorBooking");
-const authMiddleware = require("../../middleware/auth");
+const TutorBooking = require("../../models/tutorBooking/TutorBooking");
+const authMiddleware = require("../../middlware/auth");
 
 // @route   POST /api/bookings
 // @desc    Create a new tutor booking (student requests a session)
 // @access  Private (students only)
 router.post("/", authMiddleware, async (req, res) => {
   try {
-    const { tutor, subject, bookingTime, duration } = req.body;
+    const { tutor, subject, bookingTime } = req.body;
 
     if (req.user.role !== "student") {
       return res.status(403).json({ message: "Only students can book tutors" });
@@ -19,7 +19,6 @@ router.post("/", authMiddleware, async (req, res) => {
       tutor,
       subject,
       bookingTime,
-      duration,
       status: "pending",
     });
 
@@ -49,9 +48,7 @@ router.get("/tutor", authMiddleware, async (req, res) => {
       id: booking._id,
       title: `${booking.subject} - ${booking.status}`,
       start: booking.bookingTime,
-      end: new Date(
-        new Date(booking.bookingTime).getTime() + booking.duration * 60000
-      ),
+      end: booking.bookingTime, // End time logic will be handled in frontend
       extendedProps: {
         student: booking.student.name,
         status: booking.status,
@@ -85,9 +82,7 @@ router.get("/student", authMiddleware, async (req, res) => {
       id: booking._id,
       title: `${booking.subject} - ${booking.status}`,
       start: booking.bookingTime,
-      end: new Date(
-        new Date(booking.bookingTime).getTime() + booking.duration * 60000
-      ),
+      end: booking.bookingTime, // End time logic will be handled in frontend
       extendedProps: {
         tutor: booking.tutor.name,
         status: booking.status,
@@ -102,18 +97,18 @@ router.get("/student", authMiddleware, async (req, res) => {
 });
 
 // @route   PATCH /api/bookings/:id
-// @desc    Update booking status (confirm, complete, cancel), booking time & duration
+// @desc    Update booking status (confirm, complete, cancel), booking time
 // @access  Private (tutors & students)
 router.patch("/:id", authMiddleware, async (req, res) => {
   try {
-    const { status, bookingTime, duration } = req.body;
+    const { status, bookingTime } = req.body;
 
     const booking = await TutorBooking.findById(req.params.id);
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Status update logic (same as before)
+    // Status update logic
     if (status) {
       if (!["confirmed", "completed", "cancelled"].includes(status)) {
         return res.status(400).json({ message: "Invalid status update" });
@@ -138,44 +133,16 @@ router.patch("/:id", authMiddleware, async (req, res) => {
       }
     }
 
-    // Booking Time & Duration update logic (only student can request this)
-    if (req.user.role === "student" && (bookingTime || duration)) {
-      const newBookingTime = bookingTime
-        ? new Date(bookingTime)
-        : booking.bookingTime;
-      const newDuration = duration || booking.duration;
-      const newEndTime = new Date(
-        newBookingTime.getTime() + newDuration * 60000
-      ); // Convert duration to milliseconds
-
-      // Check if the tutor has conflicting bookings
-      const conflict = await TutorBooking.findOne({
-        tutor: booking.tutor,
-        _id: { $ne: booking._id }, // Exclude the current booking from the check
-        bookingTime: { $lt: newEndTime }, // Starts before the new booking ends
-        $expr: {
-          $gte: [
-            { $add: ["$bookingTime", { $multiply: ["$duration", 60000] }] },
-            newBookingTime,
-          ], // Ends after the new booking starts
-        },
-      });
-
-      if (conflict) {
-        return res
-          .status(400)
-          .json({ message: "This time slot is already booked for the tutor" });
-      }
-
-      // If no conflicts, update the booking
-      booking.bookingTime = newBookingTime;
-      booking.duration = newDuration;
+    // Booking Time update (check availability logic should be handled before this step)
+    if (bookingTime) {
+      // Logic to ensure the new booking time fits into the tutor's availability
+      booking.bookingTime = bookingTime;
     }
 
     await booking.save();
-    res.json(booking);
+    res.status(200).json(booking);
   } catch (err) {
-    console.error("Error updating booking:", err);
+    console.error("Booking update error:", err);
     res.status(500).json({ message: "Server error" });
   }
 });

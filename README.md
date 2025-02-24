@@ -46,3 +46,11 @@ subject: Subject of the booking.
 duration: Duration of the booking.
 bookingTime: Time of the booking.
 status: Status of the booking.
+
+frontend notes:
+Tutors will set their availability by selecting a day, start & end time, and subject. If they add multiple subjects on the same day, the next subject must start at or after the previous one ends (no overlapping).
+Time selection for tutors and students should be in 15-minute increments (:00, :15, :30, :45).
+Students will begin booking by selecting a subject, then a start time filtered by tutor availability.
+Only tutors available for that subject at the selected time will be shown.
+If students book multiple subjects, each subject’s start time must be at or after the previous subject’s end time.
+FullCalendar should handle availability display and prevent invalid selections (like overlapping times).
