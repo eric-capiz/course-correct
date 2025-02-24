@@ -37,7 +37,7 @@ date: Date of the study group.
 time: Time of the study group.
 duration: Duration of the study group.
 
-TutorBooking Model
+TutorBooking Model (will use fullcalendar for the calendar on frontend)
 The TutorBooking Model stores information about tutor bookings:
 
 student: References to the User model.

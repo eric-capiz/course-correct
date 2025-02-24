@@ -20,10 +20,8 @@ router.post("/", authMiddleware, async (req, res) => {
       subject,
       bookingTime,
       duration,
+      status: "pending",
     });
-
-    // Automatically set status to pending when booking is created
-    booking.status = "pending";
 
     await booking.save();
     res.status(201).json(booking);
@@ -34,7 +32,7 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 // @route   GET /api/bookings/tutor
-// @desc    Get all bookings for a tutor
+// @desc    Get all bookings for a tutor (formatted for FullCalendar)
 // @access  Private (tutors only)
 router.get("/tutor", authMiddleware, async (req, res) => {
   try {
@@ -46,7 +44,21 @@ router.get("/tutor", authMiddleware, async (req, res) => {
       "student",
       "name email"
     );
-    res.json(bookings);
+
+    const events = bookings.map((booking) => ({
+      id: booking._id,
+      title: `${booking.subject} - ${booking.status}`,
+      start: booking.bookingTime,
+      end: new Date(
+        new Date(booking.bookingTime).getTime() + booking.duration * 60000
+      ),
+      extendedProps: {
+        student: booking.student.name,
+        status: booking.status,
+      },
+    }));
+
+    res.json(events);
   } catch (err) {
     console.error("Error fetching tutor bookings:", err);
     res.status(500).json({ message: "Server error" });
@@ -54,7 +66,7 @@ router.get("/tutor", authMiddleware, async (req, res) => {
 });
 
 // @route   GET /api/bookings/student
-// @desc    Get all bookings for a student
+// @desc    Get all bookings for a student (formatted for FullCalendar)
 // @access  Private (students only)
 router.get("/student", authMiddleware, async (req, res) => {
   try {
@@ -68,58 +80,102 @@ router.get("/student", authMiddleware, async (req, res) => {
       "tutor",
       "name email"
     );
-    res.json(bookings);
+
+    const events = bookings.map((booking) => ({
+      id: booking._id,
+      title: `${booking.subject} - ${booking.status}`,
+      start: booking.bookingTime,
+      end: new Date(
+        new Date(booking.bookingTime).getTime() + booking.duration * 60000
+      ),
+      extendedProps: {
+        tutor: booking.tutor.name,
+        status: booking.status,
+      },
+    }));
+
+    res.json(events);
   } catch (err) {
     console.error("Error fetching student bookings:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// @route   PATCH /api/bookings/:id/update-status
-// @desc    Update the status of a booking (confirm, cancel, complete)
-// @access  Private
-router.patch("/:id/update-status", authMiddleware, async (req, res) => {
+// @route   PATCH /api/bookings/:id
+// @desc    Update booking status (confirm, complete, cancel), booking time & duration
+// @access  Private (tutors & students)
+router.patch("/:id", authMiddleware, async (req, res) => {
   try {
-    const { status } = req.body; // status could be "confirmed", "cancelled", or "completed"
-
-    if (!["confirmed", "cancelled", "completed"].includes(status)) {
-      return res.status(400).json({ message: "Invalid status value" });
-    }
+    const { status, bookingTime, duration } = req.body;
 
     const booking = await TutorBooking.findById(req.params.id);
-    if (!booking) return res.status(404).json({ message: "Booking not found" });
-
-    // Only allow the tutor to confirm the booking
-    if (status === "confirmed" && booking.tutor.toString() !== req.user.id) {
-      return res
-        .status(403)
-        .json({ message: "Only tutors can confirm bookings" });
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Allow the tutor or student to cancel the booking
-    if (
-      status === "cancelled" &&
-      booking.student.toString() !== req.user.id &&
-      booking.tutor.toString() !== req.user.id
-    ) {
-      return res
-        .status(403)
-        .json({ message: "You can only cancel your own bookings" });
+    // Status update logic (same as before)
+    if (status) {
+      if (!["confirmed", "completed", "cancelled"].includes(status)) {
+        return res.status(400).json({ message: "Invalid status update" });
+      }
+
+      if (req.user.role === "tutor") {
+        if (status === "confirmed" || status === "completed") {
+          booking.status = status;
+        } else {
+          return res
+            .status(403)
+            .json({ message: "Tutors cannot cancel student bookings" });
+        }
+      } else if (req.user.role === "student") {
+        if (status === "cancelled") {
+          booking.status = status;
+        } else {
+          return res
+            .status(403)
+            .json({ message: "Students can only cancel bookings" });
+        }
+      }
     }
 
-    // Only the tutor can mark the session as completed
-    if (status === "completed" && booking.tutor.toString() !== req.user.id) {
-      return res
-        .status(403)
-        .json({ message: "Only tutors can mark bookings as completed" });
+    // Booking Time & Duration update logic (only student can request this)
+    if (req.user.role === "student" && (bookingTime || duration)) {
+      const newBookingTime = bookingTime
+        ? new Date(bookingTime)
+        : booking.bookingTime;
+      const newDuration = duration || booking.duration;
+      const newEndTime = new Date(
+        newBookingTime.getTime() + newDuration * 60000
+      ); // Convert duration to milliseconds
+
+      // Check if the tutor has conflicting bookings
+      const conflict = await TutorBooking.findOne({
+        tutor: booking.tutor,
+        _id: { $ne: booking._id }, // Exclude the current booking from the check
+        bookingTime: { $lt: newEndTime }, // Starts before the new booking ends
+        $expr: {
+          $gte: [
+            { $add: ["$bookingTime", { $multiply: ["$duration", 60000] }] },
+            newBookingTime,
+          ], // Ends after the new booking starts
+        },
+      });
+
+      if (conflict) {
+        return res
+          .status(400)
+          .json({ message: "This time slot is already booked for the tutor" });
+      }
+
+      // If no conflicts, update the booking
+      booking.bookingTime = newBookingTime;
+      booking.duration = newDuration;
     }
 
-    // Update the status
-    booking.status = status;
     await booking.save();
     res.json(booking);
   } catch (err) {
-    console.error("Error updating booking status:", err);
+    console.error("Error updating booking:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
