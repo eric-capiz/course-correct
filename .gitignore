@@ -87,6 +87,17 @@ web_modules/
 .next
 out
 
+# Server-side (Backend) build output and runtime files
+/backend/node_modules
+/backend/dist
+/backend/build
+
+# Frontend (React/Next.js) build output
+/frontend/node_modules
+/frontend/.next
+/frontend/build
+/frontend/.env.local
+
 # Nuxt.js build / generate output
 .nuxt
 dist
