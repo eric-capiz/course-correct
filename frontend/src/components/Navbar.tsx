@@ -73,7 +73,9 @@ const Navbar = () => {
               borderRadius: "8px",
               px: 2,
               py: 0.5,
-              width: "300px",
+              width: "100%",
+              maxWidth: { xs: "100%", sm: "70%", md: "50%" },
+              mx: "auto",
             }}
           >
             <Search sx={{ color: "var(--secondary-color)" }} />
@@ -84,12 +86,15 @@ const Navbar = () => {
             />
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             <Button
               variant="outlined"
               sx={{
                 borderColor: "var(--primary-color)",
                 color: "var(--primary-color)",
+                whiteSpace: "nowrap", // Prevents wrapping
+                minWidth: "85px", // Ensures consistent button size
+                padding: "6px 14px", // Adjusted padding for better spacing
                 "&:hover": {
                   backgroundColor: "var(--primary-color)",
                   color: "#fff",
@@ -103,13 +108,19 @@ const Navbar = () => {
               variant="contained"
               sx={{
                 backgroundColor: "var(--primary-color)",
+                whiteSpace: "nowrap",
+                minWidth: "85px",
+                padding: "6px 14px",
                 "&:hover": { backgroundColor: "#172554" },
               }}
               aria-label="Sign up"
             >
               Sign Up
             </Button>
-            <IconButton aria-label="Open profile menu">
+            <IconButton
+              sx={{ minWidth: "40px" }}
+              aria-label="Open profile menu"
+            >
               <AccountCircle sx={{ color: "var(--primary-color)" }} />
             </IconButton>
           </Box>

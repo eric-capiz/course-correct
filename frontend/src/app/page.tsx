@@ -2,7 +2,18 @@ import { Container, Typography, Button, Box } from "@mui/material";
 
 export default function Home() {
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center", py: 6 }}>
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        mx: "auto",
+        py: 6,
+      }}
+    >
       <Typography
         variant="h3"
         sx={{
@@ -49,6 +60,7 @@ export default function Home() {
           sx={{
             borderColor: "var(--button-secondary-bg)",
             color: "var(--button-secondary-bg)",
+            alignItems: "center",
             padding: "12px 24px",
             fontSize: "1rem",
             fontWeight: 600,
