@@ -54,3 +54,11 @@ Students will begin booking by selecting a subject, then a start time filtered b
 Only tutors available for that subject at the selected time will be shown.
 If students book multiple subjects, each subject’s start time must be at or after the previous subject’s end time.
 FullCalendar should handle availability display and prevent invalid selections (like overlapping times).
+
+<!-- FUTURE FEATURE:
+1. Study Guides and Notes Upload
+Tutors Uploading Study Guides: Tutors will be able to upload study materials, guides, or resources specific to certain classes or grade levels. These resources will be easily accessible for students looking to supplement their learning.
+Students Uploading Notes: Students can upload their own notes for the same classes or grade levels. This fosters a peer-to-peer learning environment, where students can help each other.
+
+2. Expanding Beyond Classroom Learning
+Professional "Classes" and Career Development: The app could evolve into a platform where professionals from various industries (e.g., mechanics, chefs, artists) can offer workshops or training sessions outside of the traditional classroom. For example, a mechanic could post an opportunity saying, "Anyone interested in becoming a mechanic, I'll volunteer my time to teach the basics and even offer some hands-on experience." This way, people can provide practical career development or mentorship for anyone interested in learning a new skill. -->

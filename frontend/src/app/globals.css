@@ -1,24 +1,32 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Primary Theme Colors */
+  --primary-color: #1e3a8a; /* Midnight Blue */
+  --secondary-color: #475569; /* Slate Gray */
+  --accent-color: #facc15; /* Warm Yellow */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Background & Text */
+  --background-color: #f8fafc;
+  --text-color: #1e293b;
+
+  /* Button Colors */
+  --button-primary-bg: var(--primary-color);
+  --button-primary-hover: #172554;
+  --button-secondary-bg: var(--secondary-color);
+  --button-secondary-hover: #334155;
+
+  /* Typography */
+  --font-body: "Inter", Arial, sans-serif;
+  --font-heading: "Poppins", sans-serif;
 }
 
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-color);
+  background: var(--background-color);
+  font-family: var(--font-body);
+  padding: 20px;
 }
 
 *,
@@ -34,8 +42,6 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+button {
+  transition: all 0.3s ease;
 }
