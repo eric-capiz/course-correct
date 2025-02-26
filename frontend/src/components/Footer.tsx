@@ -1,8 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Box, Typography, Link } from "@mui/material";
 
 const Footer = () => {
+  const [year, setYear] = useState("");
+
+  useEffect(() => {
+    setYear(new Date().getFullYear().toString());
+  }, []);
+
   return (
     <Box
       component="footer"
@@ -20,9 +27,10 @@ const Footer = () => {
         color: "var(--text-color)",
       }}
     >
-      <Typography variant="body2">
-        &copy; {new Date().getFullYear()} Course Correct. All rights reserved.
+      <Typography variant="body2" aria-live="polite">
+        &copy; {year} Course Correct. All rights reserved.
       </Typography>
+
       <Typography variant="body2">
         Built by{" "}
         <Link
@@ -34,15 +42,17 @@ const Footer = () => {
             fontWeight: 500,
             color: "var(--primary-color)",
           }}
+          aria-label="Visit Eric Capiz's portfolio in a new tab"
         >
           Eric Capiz
         </Link>
       </Typography>
+
       <Typography
         variant="body2"
         sx={{ fontStyle: "italic", color: "var(--secondary-color)" }}
       >
-        Learn, Connect, Succeed.
+        <em>Learn, Connect, Succeed.</em>
       </Typography>
     </Box>
   );
