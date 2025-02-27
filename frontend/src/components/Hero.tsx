@@ -65,7 +65,7 @@ const Hero = () => {
             }}
             aria-label="Find a Tutor"
           >
-            Find a Tutor
+            Book Tutor Session
           </Button>
           <Button
             variant="outlined"
@@ -84,7 +84,7 @@ const Hero = () => {
             }}
             aria-label="Create a Study Group"
           >
-            Create Study Group
+            Find Study Group
           </Button>
         </Box>
       </Container>

@@ -33,7 +33,16 @@ const UserSchema = new mongoose.Schema(
     ],
     gradeLevel: {
       type: String,
-      enum: ["freshman", "sophomore", "junior", "senior"],
+      enum: [
+        "H.S-Freshman",
+        "H.S-Sophomore",
+        "H.S-Junior",
+        "H.S-Senior",
+        "Uni-Freshman",
+        "Uni-Sophomore",
+        "Uni-Junior",
+        "Uni-Senior",
+      ],
       required: true,
     },
     tutoringAvailability: [

@@ -31,7 +31,7 @@ const seedData = async () => {
         password: "demo",
         role: "tutor",
         subjects: ["Math", "Physics"],
-        gradeLevel: "junior",
+        gradeLevel: "H.S-Junior",
       },
       {
         name: "Jane Smith",
@@ -40,7 +40,7 @@ const seedData = async () => {
         password: "demo",
         role: "tutor",
         subjects: ["Biology", "Chemistry"],
-        gradeLevel: "senior",
+        gradeLevel: "H.S-Senior",
       },
       {
         name: "Emily Johnson",
@@ -49,7 +49,7 @@ const seedData = async () => {
         password: "demo",
         role: "tutor",
         subjects: ["History", "English"],
-        gradeLevel: "sophomore",
+        gradeLevel: "Uni-Sophomore",
       },
     ];
 
@@ -62,7 +62,7 @@ const seedData = async () => {
         password: "demo",
         role: "student",
         subjects: ["Math", "Biology"],
-        gradeLevel: "freshman",
+        gradeLevel: "H.S-Freshman",
       },
       {
         name: "Mia Zhang",
@@ -71,7 +71,7 @@ const seedData = async () => {
         password: "demo",
         role: "student",
         subjects: ["Physics", "History"],
-        gradeLevel: "junior",
+        gradeLevel: "Uni-Junior",
       },
       {
         name: "Lucas Patel",
@@ -80,7 +80,7 @@ const seedData = async () => {
         password: "demo",
         role: "student",
         subjects: ["Chemistry", "English"],
-        gradeLevel: "senior",
+        gradeLevel: "Uni-Senior",
       },
     ];
 
