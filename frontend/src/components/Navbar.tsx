@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AuthModal from "./modals/AuthModal";
 import {
   AppBar,
   Box,
@@ -29,6 +30,10 @@ import Link from "next/link";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+
+  const toggleAuthMode = () => setIsLogin((prev) => !prev);
 
   return (
     <>
@@ -92,15 +97,19 @@ const Navbar = () => {
               sx={{
                 borderColor: "var(--primary-color)",
                 color: "var(--primary-color)",
-                whiteSpace: "nowrap", // Prevents wrapping
-                minWidth: "85px", // Ensures consistent button size
-                padding: "6px 14px", // Adjusted padding for better spacing
+                whiteSpace: "nowrap",
+                minWidth: "85px",
+                padding: "6px 14px",
                 "&:hover": {
                   backgroundColor: "var(--primary-color)",
                   color: "#fff",
                 },
               }}
               aria-label="Log in"
+              onClick={() => {
+                setIsLogin(true);
+                setAuthOpen(true);
+              }}
             >
               Log In
             </Button>
@@ -114,6 +123,10 @@ const Navbar = () => {
                 "&:hover": { backgroundColor: "#172554" },
               }}
               aria-label="Sign up"
+              onClick={() => {
+                setIsLogin(false);
+                setAuthOpen(true);
+              }}
             >
               Sign Up
             </Button>
@@ -199,7 +212,11 @@ const Navbar = () => {
               <ListItemButton
                 component={Link}
                 href="/login"
-                onClick={() => setMenuOpen(false)}
+                onClick={() => {
+                  setIsLogin(true);
+                  setAuthOpen(true);
+                  setMenuOpen(false);
+                }}
                 aria-label="Go to login page"
               >
                 <ListItemIcon>
@@ -212,7 +229,11 @@ const Navbar = () => {
               <ListItemButton
                 component={Link}
                 href="/register"
-                onClick={() => setMenuOpen(false)}
+                onClick={() => {
+                  setIsLogin(false);
+                  setAuthOpen(true);
+                  setMenuOpen(false);
+                }}
                 aria-label="Go to sign up page"
               >
                 <ListItemIcon>
@@ -263,6 +284,12 @@ const Navbar = () => {
           </List>
         </Box>
       </Drawer>
+      <AuthModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        isLogin={isLogin}
+        toggleAuthMode={toggleAuthMode}
+      />
     </>
   );
 };
