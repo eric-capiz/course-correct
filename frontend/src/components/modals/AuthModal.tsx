@@ -9,8 +9,11 @@ import {
   Button,
   IconButton,
   MenuItem,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { useAuth } from "@/context/auth/AuthContext";
 
 const roles = ["student", "tutor"];
 const gradeLevels = [
@@ -37,15 +40,18 @@ const AuthModal = ({
   isLogin,
   toggleAuthMode,
 }: AuthModalProps) => {
+  const { login, signup } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
     password: "",
-    role: "student",
+    role: "",
     subjects: "",
-    gradeLevel: "H.S-Freshman",
+    gradeLevel: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Autofocus first input when modal opens
   useEffect(() => {
@@ -70,10 +76,33 @@ const AuthModal = ({
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission (Placeholder)
-  const handleSubmit = () => {
-    console.log("Submitting:", formData);
-    onClose();
+  // Handle form submission
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (isLogin) {
+        // Login
+        await login({ email: formData.email, password: formData.password });
+      } else {
+        // Signup
+        await signup({
+          name: formData.name,
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+          subjects: formData.subjects.split(",").map((s) => s.trim()),
+          gradeLevel: formData.gradeLevel,
+        });
+      }
+      onClose();
+    } catch (err) {
+      setError(err.message || "An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -112,6 +141,13 @@ const AuthModal = ({
         <Typography variant="h5" fontWeight={700} textAlign="center">
           {isLogin ? "Log In" : "Sign Up"}
         </Typography>
+
+        {/* Error Message */}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
         {/* Form Fields */}
         {!isLogin && (
@@ -203,12 +239,19 @@ const AuthModal = ({
         <Button
           variant="contained"
           onClick={handleSubmit}
+          disabled={loading}
           sx={{
             backgroundColor: "var(--primary-color)",
             "&:hover": { backgroundColor: "var(--button-primary-hover)" },
           }}
         >
-          {isLogin ? "Log In" : "Sign Up"}
+          {loading ? (
+            <CircularProgress size={24} sx={{ color: "white" }} />
+          ) : isLogin ? (
+            "Log In"
+          ) : (
+            "Sign Up"
+          )}
         </Button>
 
         <Typography variant="body2" textAlign="center">

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../models/user/User");
+const authMiddleware = require("../../middlware/auth");
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
@@ -107,6 +108,22 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/verify", authMiddleware, async (req, res) => {
+  try {
+    console.log("Verifying token for user:", req.user);
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      console.log("User not found");
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("User verified:", user);
+    res.json(user);
+  } catch (err) {
+    console.error("Verify route error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 

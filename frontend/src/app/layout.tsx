@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AppProvider from "@/context/AppContext";
+import AuthProvider from "@/context/auth/AuthContext";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppProvider>
+        <AuthProvider>
           <div
             style={{
               display: "flex",
@@ -29,7 +29,7 @@ export default function RootLayout({
             <main style={{ flex: "1" }}>{children}</main>
             <Footer />
           </div>
-        </AppProvider>
+        </AuthProvider>
       </body>
     </html>
   );
