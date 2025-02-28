@@ -7,7 +7,7 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import { authService } from "../../services/authService";
+import { authService } from "../../services/auth/authService";
 
 interface User {
   id: string;
@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const [token, setToken] = useState<string | null>(initialToken);
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Memoize verifyToken to ensure it only changes when token changes
   const verifyToken = useCallback(async () => {
@@ -44,6 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.error("Token verification failed:", error);
       logout();
     }
+    setLoading(false);
   }, [token]);
 
   // Verify token on initial load and whenever the token changes
@@ -74,7 +76,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, loading, login, signup, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

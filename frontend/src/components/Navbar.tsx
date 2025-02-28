@@ -16,6 +16,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  CircularProgress,
 } from "@mui/material";
 import {
   Search,
@@ -27,13 +28,32 @@ import {
   PersonAdd,
 } from "@mui/icons-material";
 import Link from "next/link";
+import { useAuth } from "@/context/auth/AuthContext";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
 
+  const { user, logout, loading } = useAuth();
+
+  const capitalize = (str: string) =>
+    str.charAt(0).toUpperCase() + str.slice(1);
+
   const toggleAuthMode = () => setIsLogin((prev) => !prev);
+
+  if (loading) {
+    return (
+      <CircularProgress
+        sx={{
+          color: "var(--primary-color)",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+        }}
+      />
+    );
+  }
 
   return (
     <>
@@ -92,50 +112,84 @@ const Navbar = () => {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Button
-              variant="outlined"
-              sx={{
-                borderColor: "var(--primary-color)",
-                color: "var(--primary-color)",
-                whiteSpace: "nowrap",
-                minWidth: "85px",
-                padding: "6px 14px",
-                "&:hover": {
-                  backgroundColor: "var(--primary-color)",
-                  color: "#fff",
-                },
-              }}
-              aria-label="Log in"
-              onClick={() => {
-                setIsLogin(true);
-                setAuthOpen(true);
-              }}
-            >
-              Log In
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "var(--primary-color)",
-                whiteSpace: "nowrap",
-                minWidth: "85px",
-                padding: "6px 14px",
-                "&:hover": { backgroundColor: "#172554" },
-              }}
-              aria-label="Sign up"
-              onClick={() => {
-                setIsLogin(false);
-                setAuthOpen(true);
-              }}
-            >
-              Sign Up
-            </Button>
-            <IconButton
-              sx={{ minWidth: "40px" }}
-              aria-label="Open profile menu"
-            >
-              <AccountCircle sx={{ color: "var(--primary-color)" }} />
-            </IconButton>
+            {user ? (
+              <>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderColor: "var(--primary-color)",
+                    color: "var(--primary-color)",
+                    whiteSpace: "nowrap",
+                    minWidth: "85px",
+                    padding: "6px 14px",
+                    "&:hover": {
+                      backgroundColor: "var(--primary-color)",
+                      color: "#fff",
+                    },
+                  }}
+                  aria-label="Go to profile"
+                  component={Link}
+                  href="/profile"
+                >
+                  {user.username} Profile
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "var(--primary-color)",
+                    whiteSpace: "nowrap",
+                    minWidth: "85px",
+                    padding: "6px 14px",
+                    "&:hover": { backgroundColor: "#172554" },
+                  }}
+                  aria-label="Log out"
+                  onClick={logout}
+                >
+                  Log Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderColor: "var(--primary-color)",
+                    color: "var(--primary-color)",
+                    whiteSpace: "nowrap",
+                    minWidth: "85px",
+                    padding: "6px 14px",
+                    "&:hover": {
+                      backgroundColor: "var(--primary-color)",
+                      color: "#fff",
+                    },
+                  }}
+                  aria-label="Log in"
+                  onClick={() => {
+                    setIsLogin(true);
+                    setAuthOpen(true);
+                  }}
+                >
+                  Log In
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "var(--primary-color)",
+                    whiteSpace: "nowrap",
+                    minWidth: "85px",
+                    padding: "6px 14px",
+                    "&:hover": { backgroundColor: "#172554" },
+                  }}
+                  aria-label="Sign up"
+                  onClick={() => {
+                    setIsLogin(false);
+                    setAuthOpen(true);
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
           </Box>
         </Toolbar>
 
@@ -208,53 +262,72 @@ const Navbar = () => {
           onKeyDown={(e) => e.key === "Escape" && setMenuOpen(false)}
         >
           <List>
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                href="/login"
-                onClick={() => {
-                  setIsLogin(true);
-                  setAuthOpen(true);
-                  setMenuOpen(false);
-                }}
-                aria-label="Go to login page"
-              >
-                <ListItemIcon>
-                  <Login />
-                </ListItemIcon>
-                <ListItemText primary="Log In" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                href="/register"
-                onClick={() => {
-                  setIsLogin(false);
-                  setAuthOpen(true);
-                  setMenuOpen(false);
-                }}
-                aria-label="Go to sign up page"
-              >
-                <ListItemIcon>
-                  <PersonAdd />
-                </ListItemIcon>
-                <ListItemText primary="Sign Up" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                href="/profile"
-                onClick={() => setMenuOpen(false)}
-                aria-label="Go to profile page"
-              >
-                <ListItemIcon>
-                  <AccountCircle />
-                </ListItemIcon>
-                <ListItemText primary="View Profile" />
-              </ListItemButton>
-            </ListItem>
+            {user ? (
+              <>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    href="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    aria-label="Go to profile page"
+                  >
+                    <ListItemIcon>
+                      <AccountCircle />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`${capitalize(user.username)} Profile`}
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      logout();
+                      setMenuOpen(false);
+                    }}
+                    aria-label="Log out"
+                  >
+                    <ListItemIcon>
+                      <Login />
+                    </ListItemIcon>
+                    <ListItemText primary="Log Out" />
+                  </ListItemButton>
+                </ListItem>
+              </>
+            ) : (
+              <>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setIsLogin(true);
+                      setAuthOpen(true);
+                      setMenuOpen(false);
+                    }}
+                    aria-label="Log in"
+                  >
+                    <ListItemIcon>
+                      <Login />
+                    </ListItemIcon>
+                    <ListItemText primary="Log In" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setIsLogin(false);
+                      setAuthOpen(true);
+                      setMenuOpen(false);
+                    }}
+                    aria-label="Sign up"
+                  >
+                    <ListItemIcon>
+                      <PersonAdd />
+                    </ListItemIcon>
+                    <ListItemText primary="Sign Up" />
+                  </ListItemButton>
+                </ListItem>
+              </>
+            )}
             <ListItem disablePadding>
               <ListItemButton
                 component={Link}
