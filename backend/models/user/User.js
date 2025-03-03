@@ -51,6 +51,12 @@ const UserSchema = new mongoose.Schema(
         ref: "Availability",
       },
     ],
+    tutorSessions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TutorBooking",
+      },
+    ],
     joinedStudyGroups: [
       {
         type: mongoose.Schema.Types.ObjectId,

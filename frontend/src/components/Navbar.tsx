@@ -28,7 +28,7 @@ import {
   PersonAdd,
 } from "@mui/icons-material";
 import Link from "next/link";
-import { useAuth } from "@/context/auth/AuthContext";
+import { useAuth } from "@/context/auth/authContext";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);

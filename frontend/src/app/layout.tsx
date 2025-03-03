@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AuthProvider from "@/context/auth/AuthContext";
+import AuthProvider from "@/context/auth/authContext";
 import UserProvider from "@/context/users/userContext";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Availability = require("../../models/tutor/Tutor");
+const Availability = require("../../models/tutorAvailability/tutorAvailbility");
 const TutorBooking = require("../../models/tutorBooking/TutorBooking");
 const authMiddleware = require("../../middlware/auth");
 

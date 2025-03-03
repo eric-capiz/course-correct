@@ -7,7 +7,7 @@ import {
   Container,
   CircularProgress,
 } from "@mui/material";
-import { useAuth } from "@/context/auth/AuthContext";
+import { useAuth } from "@/context/auth/authContext";
 
 const Hero = () => {
   const { user, loading } = useAuth();
