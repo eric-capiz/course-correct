@@ -3,66 +3,42 @@ const bcrypt = require("bcryptjs");
 const User = require("./models/user/User");
 const TutorBooking = require("./models/tutorBooking/TutorBooking");
 const StudyGroup = require("./models/studyGroup/StudyGroup");
-const Availability = require("./models/tutor/Tutor");
+const Availability = require("./models/tutorAvailability/tutorAvailbility");
 
 require("dotenv").config();
 
-// Seed data
 const seedData = async () => {
   try {
-    // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
 
     console.log("MongoDB connected successfully!");
-
-    // Drop all collections before seeding
     await mongoose.connection.db.dropDatabase();
     console.log("Dropped existing database collections!");
 
-    // Create 3 tutors
-    const tutors = [
-      {
-        name: "John Doe",
-        username: "johndoe",
-        email: "johndoe@example.com",
-        password: "demo",
-        role: "tutor",
-        subjects: ["Math", "Physics"],
-        gradeLevel: "H.S-Junior",
-      },
-      {
-        name: "Jane Smith",
-        username: "janesmith",
-        email: "janesmith@example.com",
-        password: "demo",
-        role: "tutor",
-        subjects: ["Biology", "Chemistry"],
-        gradeLevel: "H.S-Senior",
-      },
-      {
-        name: "Emily Johnson",
-        username: "emilyjohnson",
-        email: "emilyjohnson@example.com",
-        password: "demo",
-        role: "tutor",
-        subjects: ["History", "English"],
-        gradeLevel: "Uni-Sophomore",
-      },
-    ];
+    // Tutor
+    const tutorData = {
+      name: "John Doe",
+      username: "johndoe",
+      email: "johndoe@example.com",
+      password: "demo",
+      role: "tutor",
+      subjects: ["Math", "Physics"],
+      gradeLevel: "Uni-Freshman",
+    };
 
-    // Create 3 students with different grade levels
-    const students = [
+    // Students
+    const studentsData = [
       {
         name: "Alex Lee",
         username: "alexlee",
         email: "alexlee@example.com",
         password: "demo",
         role: "student",
-        subjects: ["Math", "Biology"],
-        gradeLevel: "H.S-Freshman",
+        subjects: ["Math", "Physics"],
+        gradeLevel: "H.S-Senior",
       },
       {
         name: "Mia Zhang",
@@ -70,147 +46,138 @@ const seedData = async () => {
         email: "miazhang@example.com",
         password: "demo",
         role: "student",
-        subjects: ["Physics", "History"],
-        gradeLevel: "Uni-Junior",
-      },
-      {
-        name: "Lucas Patel",
-        username: "lucaspatel",
-        email: "lucaspatel@example.com",
-        password: "demo",
-        role: "student",
-        subjects: ["Chemistry", "English"],
-        gradeLevel: "Uni-Senior",
+        subjects: ["Math", "Physics"],
+        gradeLevel: "H.S-Senior",
       },
     ];
 
-    // Hash passwords and create tutor and student users
-    const createUser = async (userData) => {
+    // Hash passwords
+    const hashPassword = async (userData) => {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-      const user = new User({
-        ...userData,
-        password: hashedPassword,
-      });
-
-      await user.save();
-      return user;
+      return { ...userData, password: hashedPassword };
     };
 
-    // Create tutors and students
-    const createdTutors = await Promise.all(tutors.map(createUser));
-    const createdStudents = await Promise.all(students.map(createUser));
+    // Create users
+    const tutor = await new User(await hashPassword(tutorData)).save();
+    const students = await Promise.all(
+      studentsData.map(async (student) =>
+        new User(await hashPassword(student)).save()
+      )
+    );
 
-    // Create 2 study groups
-    const studyGroup1 = new StudyGroup({
+    console.log("Users created!");
+
+    // Create a study group
+    const studyGroup = new StudyGroup({
       title: "Math Study Group",
       subject: "Math",
       date: new Date("2025-03-10T10:00:00Z"),
       time: "10:00 AM",
       duration: 60,
-      creator: createdStudents[0]._id,
-      participants: createdStudents
-        .filter(
-          (student) =>
-            student._id.toString() !== createdStudents[0]._id.toString()
-        ) // Exclude creator
-        .map((student) => student._id), // Map other students as participants
+      creator: students[0]._id,
+      participants: students.map((s) => s._id),
     });
 
-    const studyGroup2 = new StudyGroup({
-      title: "Physics Study Group",
-      subject: "Physics",
-      date: new Date("2025-03-12T14:00:00Z"),
-      time: "2:00 PM",
-      duration: 90,
-      creator: createdStudents[1]._id,
-      participants: createdStudents
-        .filter(
-          (student) =>
-            student._id.toString() !== createdStudents[1]._id.toString()
-        ) // Exclude creator
-        .map((student) => student._id), // Map other students as participants
-    });
+    await studyGroup.save();
+    console.log("Study group created!");
 
-    // Save study groups
-    await studyGroup1.save();
-    await studyGroup2.save();
-
-    // Update users' joinedStudyGroups
-    const updateUserStudyGroups = async (userIds, studyGroup) => {
-      await Promise.all(
-        userIds.map(async (userId) => {
-          await User.findByIdAndUpdate(userId, {
-            $addToSet: { joinedStudyGroups: studyGroup._id }, // Add study group ID to the joinedStudyGroups array
-          });
+    // Assign study group to students
+    await Promise.all(
+      students.map((student) =>
+        User.findByIdAndUpdate(student._id, {
+          $addToSet: { joinedStudyGroups: studyGroup._id },
         })
-      );
-    };
-
-    // Include the creator and participants in the joinedStudyGroups
-    await updateUserStudyGroups(
-      [
-        createdStudents[0]._id,
-        ...createdStudents.slice(1).map((student) => student._id),
-      ],
-      studyGroup1
+      )
     );
 
-    await updateUserStudyGroups(
-      [
-        createdStudents[1]._id,
-        ...createdStudents
-          .filter(
-            (student) =>
-              student._id.toString() !== createdStudents[1]._id.toString()
-          )
-          .map((student) => student._id),
-      ],
-      studyGroup2
-    );
+    console.log("Students assigned to study group!");
 
-    console.log(
-      "Study groups and users updated with study group participation!"
-    );
-
-    // Create availability slots for tutors
+    // Create tutor availability (4 days)
     const availabilityData = [
+      { day: "Monday", subject: "Math", startTime: "09:00", endTime: "10:00" },
       {
-        tutor: createdTutors[0]._id,
-        day: "Monday",
-        subject: "Math",
-        startTime: "2025-03-01T09:00:00Z",
-        endTime: "2025-03-01T10:00:00Z",
-      },
-      {
-        tutor: createdTutors[1]._id,
         day: "Tuesday",
-        subject: "Biology",
-        startTime: "2025-03-02T11:00:00Z",
-        endTime: "2025-03-02T12:00:00Z",
+        subject: "Physics",
+        startTime: "11:00",
+        endTime: "12:00",
       },
       {
-        tutor: createdTutors[2]._id,
         day: "Wednesday",
-        subject: "History",
-        startTime: "2025-03-03T08:00:00Z",
-        endTime: "2025-03-03T09:00:00Z",
+        subject: "Math",
+        startTime: "14:00",
+        endTime: "15:00",
       },
-    ];
+      {
+        day: "Thursday",
+        subject: "Physics",
+        startTime: "16:00",
+        endTime: "17:00",
+      },
+    ].map((slot) => ({ tutor: tutor._id, ...slot }));
 
-    // Create availability entries
-    const createAvailability = async (availabilityData) => {
-      const newAvailability = new Availability(availabilityData);
-      await newAvailability.save();
+    const createdAvailability = await Availability.insertMany(availabilityData);
+    console.log("Tutor availability added!");
+
+    // Update tutor with tutoringAvailability
+    await User.findByIdAndUpdate(tutor._id, {
+      $push: {
+        tutoringAvailability: { $each: createdAvailability.map((a) => a._id) },
+      },
+    });
+
+    console.log("Tutor availability linked to tutor profile!");
+
+    // Create 2 tutor bookings per student
+    const bookings = [];
+    students.forEach((student) => {
+      bookings.push(
+        {
+          student: student._id,
+          tutor: tutor._id,
+          subject: "Math",
+          bookingTime: new Date("2025-03-03T09:00:00Z"),
+          duration: 60,
+          status: "pending",
+        },
+        {
+          student: student._id,
+          tutor: tutor._id,
+          subject: "Physics",
+          bookingTime: new Date("2025-03-04T11:00:00Z"),
+          duration: 60,
+          status: "confirmed",
+        }
+      );
+    });
+
+    const createdBookings = await TutorBooking.insertMany(bookings);
+    console.log("Tutor sessions booked!");
+
+    // Update users to include tutor sessions
+    const updateUserTutorSessions = async (userId, sessionIds) => {
+      await User.findByIdAndUpdate(userId, {
+        $push: { tutorSessions: { $each: sessionIds } },
+      });
     };
 
-    // Save availability
-    await Promise.all(availabilityData.map(createAvailability));
+    await Promise.all(
+      students.map((student, index) =>
+        updateUserTutorSessions(student._id, [
+          createdBookings[index * 2]._id,
+          createdBookings[index * 2 + 1]._id,
+        ])
+      )
+    );
 
-    console.log("Tutor availability added successfully!");
+    // Update tutor with all booked sessions
+    await updateUserTutorSessions(
+      tutor._id,
+      createdBookings.map((b) => b._id)
+    );
 
-    // Seed completed
+    console.log("Tutor sessions linked to users!");
+
     console.log("Seed data inserted successfully!");
     mongoose.connection.close();
   } catch (err) {

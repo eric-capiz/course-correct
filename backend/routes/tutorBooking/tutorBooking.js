@@ -23,6 +23,16 @@ router.post("/", authMiddleware, async (req, res) => {
     });
 
     await booking.save();
+
+    // Update student and tutor documents with the new session
+    await User.findByIdAndUpdate(req.user.id, {
+      $push: { tutorSessions: booking._id },
+    });
+
+    await User.findByIdAndUpdate(tutor, {
+      $push: { tutorSessions: booking._id },
+    });
+
     res.status(201).json(booking);
   } catch (err) {
     console.error("Booking creation error:", err);

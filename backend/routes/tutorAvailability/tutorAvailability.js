@@ -63,6 +63,10 @@ router.post("/availability", authMiddleware, async (req, res) => {
       await newAvailability.save();
     }
 
+    await User.findByIdAndUpdate(tutorId, {
+      $push: { tutoringAvailability: { $each: createdAvailability } },
+    });
+
     res.status(201).json({ message: "Availability added successfully" });
   } catch (err) {
     console.error("Error adding availability:", err);
