@@ -56,12 +56,15 @@ router.get("/tutor", authMiddleware, async (req, res) => {
 
     const events = bookings.map((booking) => ({
       id: booking._id,
-      title: `${booking.subject} - ${booking.status}`,
+      title: `${booking.subject}`,
       start: booking.bookingTime,
-      end: booking.bookingTime, // End time logic will be handled in frontend
+      end: new Date(
+        new Date(booking.bookingTime).getTime() + booking.duration * 60000
+      ).toISOString(),
       extendedProps: {
         student: booking.student.name,
         status: booking.status,
+        duration: booking.duration,
       },
     }));
 
@@ -90,12 +93,15 @@ router.get("/student", authMiddleware, async (req, res) => {
 
     const events = bookings.map((booking) => ({
       id: booking._id,
-      title: `${booking.subject} - ${booking.status}`,
+      title: `${booking.subject}`,
       start: booking.bookingTime,
-      end: booking.bookingTime, // End time logic will be handled in frontend
+      end: new Date(
+        new Date(booking.bookingTime).getTime() + booking.duration * 60000
+      ).toISOString(), // End time logic will be handled in frontend
       extendedProps: {
         tutor: booking.tutor.name,
         status: booking.status,
+        duration: booking.duration,
       },
     }));
 

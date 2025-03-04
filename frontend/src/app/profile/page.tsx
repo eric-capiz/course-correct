@@ -12,6 +12,11 @@ import {
   CardContent,
   Tabs,
   Tab,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from "@mui/material";
 import {
   AccountCircle,
@@ -35,10 +40,23 @@ const Profile = () => {
   }, [user, router]);
 
   if (!user) return null;
+
+  // Separate sessions based on status
+  const pendingBookings = bookings.filter(
+    (b) => b.extendedProps.status === "pending"
+  );
+  const upcomingBookings = bookings.filter(
+    (b) => b.extendedProps.status === "confirmed"
+  );
+  const pastBookings = bookings.filter((b) =>
+    ["completed", "cancelled"].includes(b.extendedProps.status)
+  );
+
   console.log(bookings);
 
   return (
     <Container maxWidth="lg" sx={{ display: "flex", gap: 4, py: 6 }}>
+      {/* Profile Details */}
       <Box
         sx={{
           width: "30%",
@@ -93,41 +111,99 @@ const Profile = () => {
         </Box>
       </Box>
 
+      {/* Main Section */}
       <Box sx={{ width: "70%" }}>
+        {/* Student Only: Study Groups */}
         {user.role === "student" && (
           <>
             <Typography variant="h5" fontWeight={700} mb={2}>
-              Study Groups ({user?.joinedStudyGroups?.length})
+              Study Groups ({user?.joinedStudyGroups?.length || 0})
             </Typography>
             <Card sx={{ mb: 4 }}>
               <CardContent>
-                <Typography>No study groups joined yet.</Typography>
-              </CardContent>
-            </Card>
-
-            <Typography variant="h5" fontWeight={700} mb={2}>
-              Your Tutor Sessions
-            </Typography>
-            <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)}>
-              <Tab label="Pending" />
-              <Tab label="Upcoming" />
-              <Tab label="Past" />
-            </Tabs>
-            <Card sx={{ mt: 2 }}>
-              <CardContent>
-                <Typography>
-                  {tab === 0 && "No pending tutor sessions."}
-                  {tab === 1 && "No upcoming tutor sessions."}
-                  {tab === 2 && "No past tutor sessions."}
-                </Typography>
+                {user?.joinedStudyGroups?.length > 0 ? (
+                  <Typography>Study groups will be listed here.</Typography>
+                ) : (
+                  <Typography>No study groups joined yet.</Typography>
+                )}
               </CardContent>
             </Card>
           </>
         )}
 
+        {/* Tutor Sessions (Both Students & Tutors) */}
+        <Typography variant="h5" fontWeight={700} mb={2}>
+          Your Tutor Sessions ({bookings?.length || 0})
+        </Typography>
+        <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)}>
+          <Tab label={`Pending (${pendingBookings.length})`} />
+          <Tab label={`Upcoming (${upcomingBookings.length})`} />
+          <Tab label={`Past (${pastBookings.length})`} />
+        </Tabs>
+
+        <Card sx={{ mt: 2 }}>
+          <CardContent>
+            {tab === 0 && pendingBookings.length === 0 && (
+              <Typography>No pending tutor sessions.</Typography>
+            )}
+            {tab === 1 && upcomingBookings.length === 0 && (
+              <Typography>No upcoming tutor sessions.</Typography>
+            )}
+            {tab === 2 && pastBookings.length === 0 && (
+              <Typography>No past tutor sessions.</Typography>
+            )}
+
+            {/* Session Table */}
+            {[pendingBookings, upcomingBookings, pastBookings][tab]?.length >
+              0 && (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <b>Subject</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>{user.role === "student" ? "Tutor" : "Student"}</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>Start Time</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>Duration</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>Status</b>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {[pendingBookings, upcomingBookings, pastBookings][tab].map(
+                    (booking) => (
+                      <TableRow key={booking.id}>
+                        <TableCell>{booking.title}</TableCell>
+                        <TableCell>
+                          {booking.extendedProps.tutor ||
+                            booking.extendedProps.student}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(booking.start).toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                          {booking.extendedProps.duration || "N/A"} mins
+                        </TableCell>
+                        <TableCell>{booking.extendedProps.status}</TableCell>
+                      </TableRow>
+                    )
+                  )}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+
         {user.role === "tutor" && (
           <>
-            <Typography variant="h5" fontWeight={700} mb={2}>
+            <Typography variant="h5" fontWeight={700} mt={4}>
               Your Availability
             </Typography>
             <Card>
