@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AuthProvider from "@/context/auth/authContext";
 import UserProvider from "@/context/users/userContext";
+import BookingProvider from "@/context/booking/bookingContext";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
@@ -20,17 +21,19 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <UserProvider>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "100vh",
-              }}
-            >
-              <Navbar />
-              <main style={{ flex: "1" }}>{children}</main>
-              <Footer />
-            </div>
+            <BookingProvider>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: "100vh",
+                }}
+              >
+                <Navbar />
+                <main style={{ flex: "1" }}>{children}</main>
+                <Footer />
+              </div>
+            </BookingProvider>
           </UserProvider>
         </AuthProvider>
       </body>

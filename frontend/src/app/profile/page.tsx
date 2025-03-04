@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth/authContext";
 import { useRouter } from "next/navigation";
+import { useBooking } from "@/context/booking/bookingContext";
 import {
   Container,
   Typography,
@@ -20,10 +21,10 @@ import {
   Class,
   Badge,
 } from "@mui/icons-material";
-import { useState } from "react";
 
 const Profile = () => {
   const { user } = useAuth();
+  const { bookings } = useBooking();
   const router = useRouter();
   const [tab, setTab] = useState(0);
 
@@ -34,6 +35,7 @@ const Profile = () => {
   }, [user, router]);
 
   if (!user) return null;
+  console.log(bookings);
 
   return (
     <Container maxWidth="lg" sx={{ display: "flex", gap: 4, py: 6 }}>

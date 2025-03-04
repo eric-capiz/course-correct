@@ -6,8 +6,8 @@ import {
   getTutorBookings,
   bookTutor,
   updateBooking,
-} from "@/services/booking/booking";
-import { useAuth } from "@/context/auth/AuthContext";
+} from "@/services/booking/bookingService";
+import { useAuth } from "@/context/auth/authContext";
 
 interface Booking {
   id: string;
@@ -137,9 +137,8 @@ export const BookingProvider = ({
 
 export const useBooking = () => {
   const context = useContext(BookingContext);
-  if (!context) {
+  if (!context)
     throw new Error("useBooking must be used within a BookingProvider");
-  }
   return context;
 };
 
