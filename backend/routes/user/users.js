@@ -21,11 +21,12 @@ router.get("/:id", authMiddleware, async (req, res) => {
 });
 
 // @route   PUT /api/user/:id
-// @desc    Update user data (email, username, subjects, gradeLevel)
+// @desc    Update user data (including optional password)
 // @access  Private
 router.put("/:id", authMiddleware, async (req, res) => {
   try {
-    const { email, username, subjects, gradeLevel } = req.body;
+    const { email, username, subjects, gradeLevel, role, name, password } =
+      req.body;
 
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -39,53 +40,27 @@ router.put("/:id", authMiddleware, async (req, res) => {
         .json({ message: "You can only update your own profile" });
     }
 
-    // Update fields
+    // Update basic fields if provided
     if (email) user.email = email;
     if (username) user.username = username;
     if (subjects) user.subjects = subjects;
     if (gradeLevel) user.gradeLevel = gradeLevel;
+    if (role) user.role = role;
+    if (name) user.name = name;
+
+    // Update password if provided
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
 
     await user.save();
-    res.json(user);
+
+    // Return user without password
+    const updatedUser = await User.findById(req.params.id).select("-password");
+    res.json(updatedUser);
   } catch (err) {
     console.error("Error updating user data:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// @route   PATCH /api/user/:id/password
-// @desc    Update user password
-// @access  Private
-router.patch("/:id/password", authMiddleware, async (req, res) => {
-  try {
-    const { currentPassword, newPassword } = req.body;
-
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Check if the user is updating their own password
-    if (user._id.toString() !== req.user.id) {
-      return res
-        .status(403)
-        .json({ message: "You can only update your own password" });
-    }
-
-    // Verify current password
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Current password is incorrect" });
-    }
-
-    // Hash new password
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
-
-    await user.save();
-    res.json({ message: "Password updated successfully" });
-  } catch (err) {
-    console.error("Error updating password:", err);
     res.status(500).json({ message: "Server error" });
   }
 });

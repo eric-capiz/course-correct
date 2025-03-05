@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth/authContext";
+import { useUser } from "@/context/users/userContext";
 import { useRouter } from "next/navigation";
 import { useBooking } from "@/context/booking/bookingContext";
+import EditProfileDialog from "@/components/modals/EditProfile";
 import {
   Container,
   Typography,
@@ -13,6 +15,8 @@ import {
   Tabs,
   Tab,
   Button,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import {
   AccountCircle,
@@ -21,19 +25,30 @@ import {
   School,
   Class,
   Badge,
+  Edit,
 } from "@mui/icons-material";
 
 const Profile = () => {
-  const { user, loading } = useAuth();
+  const { user: authUser, loading: authLoading } = useAuth();
+  const { user, fetchUser, updateUser } = useUser();
   const { bookings, updateSession } = useBooking();
   const router = useRouter();
   const [tab, setTab] = useState(0);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
 
   useEffect(() => {
-    if (!loading && user === null) {
+    if (!authLoading && authUser === null) {
       router.push("/");
     }
-  }, [user, loading, router]);
+  }, [authUser, authLoading, router]);
+
+  useEffect(() => {
+    if (authUser?._id) {
+      fetchUser(authUser._id)
+        .then(() => console.log("User fetch completed"))
+        .catch((err) => console.error("User fetch failed:", err));
+    }
+  }, [authUser?._id, fetchUser]);
 
   const pendingBookings = bookings.filter(
     (b) => b.extendedProps.status === "pending"
@@ -63,15 +78,43 @@ const Profile = () => {
         }}
         aria-labelledby="profile-details"
       >
-        <Typography
-          variant="h5"
-          fontWeight={700}
-          mb={2}
-          color="primary"
-          id="profile-details"
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+            gap: 1,
+          }}
         >
-          Profile Details
-        </Typography>
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            color="primary"
+            id="profile-details"
+          >
+            Profile Details
+          </Typography>
+          <Tooltip title="Edit Profile">
+            <IconButton
+              onClick={() => setOpenEditDialog(true)}
+              aria-label="edit profile"
+              sx={{
+                color: "var(--primary-color)",
+                "&:hover": {
+                  backgroundColor: "rgba(30, 58, 138, 0.04)",
+                },
+                "&:focus-visible": {
+                  outline: "2px solid var(--primary-color)",
+                  outlineOffset: "2px",
+                },
+              }}
+            >
+              <Edit />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <AccountCircle sx={{ color: "var(--primary-color)" }} />
@@ -269,6 +312,13 @@ const Profile = () => {
           </CardContent>
         </Card>
       </Box>
+
+      <EditProfileDialog
+        open={openEditDialog}
+        onClose={() => setOpenEditDialog(false)}
+        user={user}
+        updateUser={updateUser}
+      />
     </Container>
   );
 };

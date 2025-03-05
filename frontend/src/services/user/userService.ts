@@ -1,7 +1,7 @@
 import api from "@/config/axiosConfig";
 
 interface User {
-  id: string;
+  _id: string;
   name: string;
   username: string;
   email: string;
@@ -11,35 +11,30 @@ interface User {
 }
 
 interface UpdateUserData {
-  email?: string;
+  name?: string;
   username?: string;
+  email?: string;
+  role?: string;
   subjects?: string[];
   gradeLevel?: string;
-}
-
-interface UpdatePasswordData {
-  currentPassword: string;
-  newPassword: string;
+  password?: string;
 }
 
 export const userService = {
   // Fetch user data
   getUser: async (userId: string): Promise<User> => {
-    const response = await api.get(`/api/user/${userId}`);
-    return response.data;
+    try {
+      const response = await api.get(`/api/users/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error.message);
+      throw error;
+    }
   },
 
-  // Update user data
+  // Update user data (including optional password)
   updateUser: async (userId: string, data: UpdateUserData): Promise<User> => {
-    const response = await api.put(`/api/user/${userId}`, data);
+    const response = await api.put(`/api/users/${userId}`, data);
     return response.data;
-  },
-
-  // Update user password
-  updatePassword: async (
-    userId: string,
-    data: UpdatePasswordData
-  ): Promise<void> => {
-    await api.patch(`/api/user/${userId}/password`, data);
   },
 };

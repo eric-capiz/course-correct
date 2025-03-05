@@ -1,10 +1,16 @@
 "use client";
 
-import { createContext, useState, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useCallback,
+} from "react";
 import { userService } from "../../services/user/userService";
 
 interface User {
-  id: string;
+  _id: string;
   name: string;
   username: string;
   email: string;
@@ -13,17 +19,22 @@ interface User {
   gradeLevel: string;
 }
 
+interface UpdateUserData {
+  name?: string;
+  username?: string;
+  email?: string;
+  role?: string;
+  subjects?: string[];
+  gradeLevel?: string;
+  password?: string;
+}
+
 interface UserContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
   fetchUser: (userId: string) => Promise<void>;
-  updateUser: (userId: string, data: Partial<User>) => Promise<void>;
-  updatePassword: (
-    userId: string,
-    currentPassword: string,
-    newPassword: string
-  ) => Promise<void>;
+  updateUser: (userId: string, data: UpdateUserData) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -33,8 +44,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch user data
-  const fetchUser = async (userId: string) => {
+  const fetchUser = useCallback(async (userId: string) => {
     setLoading(true);
     setError(null);
     try {
@@ -45,10 +55,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // Update user data
-  const updateUser = async (userId: string, data: Partial<User>) => {
+  const updateUser = async (userId: string, data: UpdateUserData) => {
     setLoading(true);
     setError(null);
     try {
@@ -61,29 +70,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Update user password
-  const updatePassword = async (
-    userId: string,
-    currentPassword: string,
-    newPassword: string
-  ) => {
-    setLoading(true);
-    setError(null);
-    try {
-      await userService.updatePassword(userId, {
-        currentPassword,
-        newPassword,
-      });
-    } catch (err) {
-      setError(err.message || "Failed to update password");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <UserContext.Provider
-      value={{ user, loading, error, fetchUser, updateUser, updatePassword }}
+      value={{ user, loading, error, fetchUser, updateUser }}
     >
       {children}
     </UserContext.Provider>
