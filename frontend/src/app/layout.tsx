@@ -3,8 +3,8 @@ import AuthProvider from "@/context/auth/authContext";
 import UserProvider from "@/context/users/userContext";
 import BookingProvider from "@/context/booking/bookingContext";
 import StudyGroupProvider from "@/context/studyGroup/studyGroupContext";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import Footer from "@/components/global/Footer";
+import Navbar from "@/components/global/Navbar";
 import "./globals.css";
 
 export const metadata: Metadata = {

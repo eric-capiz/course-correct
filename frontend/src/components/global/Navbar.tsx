@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AuthModal from "./modals/AuthModal";
+import AuthModal from "@/components/modals/AuthModal";
 import {
   AppBar,
   Box,
