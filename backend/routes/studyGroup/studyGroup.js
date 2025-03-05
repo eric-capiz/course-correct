@@ -9,7 +9,7 @@ const authMiddleware = require("../../middlware/auth");
 // @access  Private (students only)
 router.post("/", authMiddleware, async (req, res) => {
   try {
-    const { title, subject, date, time, duration } = req.body;
+    const { title, subject, description, date, time, duration } = req.body;
 
     if (req.user.role !== "student") {
       return res
@@ -20,16 +20,17 @@ router.post("/", authMiddleware, async (req, res) => {
     const studyGroup = new StudyGroup({
       title,
       subject,
+      description,
       date,
       time,
       duration,
       creator: req.user.id,
-      participants: [req.user.id], // Add the creator to participants
+      participants: [req.user.id],
     });
 
     await studyGroup.save();
 
-    // Add the study group to the creator's `joinedStudyGroups`
+    // Add the study group to the creator's joinedStudyGroups
     await User.findByIdAndUpdate(req.user.id, {
       $push: { joinedStudyGroups: studyGroup._id },
     });
@@ -46,7 +47,9 @@ router.post("/", authMiddleware, async (req, res) => {
 // @access  Public
 router.get("/", async (req, res) => {
   try {
-    const studyGroups = await StudyGroup.find();
+    const studyGroups = await StudyGroup.find()
+      .populate("creator", "name username")
+      .populate("participants", "name username");
 
     res.json(studyGroups);
   } catch (err) {
@@ -55,9 +58,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// @route   POST /api/studyGroups/:id/join
-// @desc    Join a study group
-// @access  Private (students only)
 // @route   POST /api/studyGroups/:id/join
 // @desc    Join a study group
 // @access  Private (students only)
@@ -91,14 +91,20 @@ router.post("/:id/join", authMiddleware, async (req, res) => {
     studyGroup.participants.push(req.user.id);
     await studyGroup.save();
 
-    // Add the study group to the student's `joinedStudyGroups`
+    // Add the study group to the student's joinedStudyGroups
     await User.findByIdAndUpdate(req.user.id, {
       $push: { joinedStudyGroups: studyGroup._id },
     });
 
-    res
-      .status(200)
-      .json({ message: "Joined study group successfully", studyGroup });
+    // Populate the updated study group
+    const updatedStudyGroup = await StudyGroup.findById(studyGroup._id)
+      .populate("creator", "name username")
+      .populate("participants", "name username");
+
+    res.status(200).json({
+      message: "Joined study group successfully",
+      studyGroup: updatedStudyGroup,
+    });
   } catch (err) {
     console.error("Error joining study group:", err);
     res.status(500).json({ message: "Server error" });
@@ -122,6 +128,13 @@ router.post("/:id/leave", authMiddleware, async (req, res) => {
         .json({ message: "Only students can leave study groups" });
     }
 
+    // Check if the user is the creator
+    if (studyGroup.creator.toString() === req.user.id) {
+      return res
+        .status(400)
+        .json({ message: "Creator cannot leave their own study group" });
+    }
+
     // Check if the student is a participant of the study group
     if (!studyGroup.participants.includes(req.user.id)) {
       return res.status(400).json({ message: "You are not a participant" });
@@ -133,14 +146,20 @@ router.post("/:id/leave", authMiddleware, async (req, res) => {
     );
     await studyGroup.save();
 
-    // Remove the study group from the student's `joinedStudyGroups` array
+    // Remove the study group from the student's joinedStudyGroups array
     await User.findByIdAndUpdate(req.user.id, {
       $pull: { joinedStudyGroups: studyGroup._id },
     });
 
-    res
-      .status(200)
-      .json({ message: "Left study group successfully", studyGroup });
+    // Populate the updated study group
+    const updatedStudyGroup = await StudyGroup.findById(studyGroup._id)
+      .populate("creator", "name username")
+      .populate("participants", "name username");
+
+    res.status(200).json({
+      message: "Left study group successfully",
+      studyGroup: updatedStudyGroup,
+    });
   } catch (err) {
     console.error("Error leaving study group:", err);
     res.status(500).json({ message: "Server error" });
@@ -148,12 +167,11 @@ router.post("/:id/leave", authMiddleware, async (req, res) => {
 });
 
 // @route   PATCH /api/studyGroups/:id
-// @desc    Update a study group (subject, date, time, duration)
-// @access  Private (only creator of the group can update)
-// Only the creator can change the subject, date, or time, but if participants have joined, only the duration can be modified
+// @desc    Update a study group
+// @access  Private (only creator can update)
 router.patch("/:id", authMiddleware, async (req, res) => {
   try {
-    const { subject, date, time, duration } = req.body;
+    const { subject, description, date, time, duration } = req.body;
 
     const studyGroup = await StudyGroup.findById(req.params.id);
 
@@ -161,32 +179,38 @@ router.patch("/:id", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "Study group not found" });
     }
 
-    // Check if the user is the creator of the study group
     if (studyGroup.creator.toString() !== req.user.id) {
       return res
         .status(403)
         .json({ message: "Only the creator can update the study group" });
     }
 
-    // If there are participants, only allow changing the duration
-    if (studyGroup.participants.length > 0 && (subject || date || time)) {
+    // If there are participants, only allow changing the duration and description
+    if (studyGroup.participants.length > 1 && (subject || date || time)) {
       return res.status(400).json({
         message:
-          "Cannot change subject, date, or time once participants have joined. You can only modify the duration.",
+          "Cannot change subject, date, or time once participants have joined. You can only modify the duration and description.",
       });
     }
 
     // Update the study group with the new details
     if (subject) studyGroup.subject = subject;
+    if (description !== undefined) studyGroup.description = description;
     if (date) studyGroup.date = date;
     if (time) studyGroup.time = time;
     if (duration) studyGroup.duration = duration;
 
     await studyGroup.save();
 
-    res
-      .status(200)
-      .json({ message: "Study group updated successfully", studyGroup });
+    // Populate the updated study group
+    const updatedStudyGroup = await StudyGroup.findById(studyGroup._id)
+      .populate("creator", "name username")
+      .populate("participants", "name username");
+
+    res.status(200).json({
+      message: "Study group updated successfully",
+      studyGroup: updatedStudyGroup,
+    });
   } catch (err) {
     console.error("Error updating study group:", err);
     res.status(500).json({ message: "Server error" });
@@ -194,7 +218,7 @@ router.patch("/:id", authMiddleware, async (req, res) => {
 });
 
 // @route   DELETE /api/studyGroups/:id
-// @desc    Delete a study group (only creator can delete)
+// @desc    Delete a study group (only creator can delete if no participants)
 // @access  Private
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
@@ -211,16 +235,25 @@ router.delete("/:id", authMiddleware, async (req, res) => {
         .json({ message: "Only the creator can delete the study group" });
     }
 
-    // Check if there are any participants
-    if (studyGroup.participants.length > 0) {
+    // Check if there are any participants other than the creator
+    const otherParticipants = studyGroup.participants.filter(
+      (participant) => participant.toString() !== req.user.id.toString()
+    );
+
+    if (otherParticipants.length > 0) {
       return res.status(400).json({
         message:
-          "Cannot delete the study group as there are participants. You can only update the group.",
+          "Cannot delete the study group as there are other participants.",
       });
     }
 
+    // Remove the study group from creator's joinedStudyGroups
+    await User.findByIdAndUpdate(studyGroup.creator, {
+      $pull: { joinedStudyGroups: studyGroup._id },
+    });
+
     // Delete the study group
-    await studyGroup.remove();
+    await StudyGroup.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: "Study group deleted successfully" });
   } catch (err) {

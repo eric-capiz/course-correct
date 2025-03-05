@@ -25,7 +25,14 @@ const seedData = async () => {
       email: "johndoe@example.com",
       password: "demo",
       role: "tutor",
-      subjects: ["Math", "Physics"],
+      subjects: [
+        "Math",
+        "Physics",
+        "History",
+        "English",
+        "Biology",
+        "Chemistry",
+      ],
       gradeLevel: "Uni-Freshman",
     };
 
@@ -49,6 +56,15 @@ const seedData = async () => {
         subjects: ["Math", "Physics"],
         gradeLevel: "H.S-Senior",
       },
+      {
+        name: "Breezy",
+        username: "breezy",
+        email: "breezy@gmail.com",
+        password: "demo",
+        role: "student",
+        subjects: ["History", "Math", "English", "Biology", "Chemistry"],
+        gradeLevel: "H.S-Senior",
+      },
     ];
 
     // Hash passwords
@@ -68,30 +84,117 @@ const seedData = async () => {
 
     console.log("Users created!");
 
-    // Create a study group
-    const studyGroup = new StudyGroup({
+    // Create the original Math study group (Alex and Mia only)
+    const mathStudyGroup = new StudyGroup({
       title: "Math Study Group",
       subject: "Math",
+      description:
+        "Weekly study session focusing on calculus and advanced algebra concepts. Open discussion and problem-solving practice.",
       date: new Date("2025-03-10T10:00:00Z"),
       time: "10:00 AM",
       duration: 60,
-      creator: students[0]._id,
-      participants: students.map((s) => s._id),
+      creator: students[0]._id, // Alex Lee
+      participants: [students[0]._id, students[1]._id], // Alex Lee and Mia Zhang
     });
 
-    await studyGroup.save();
-    console.log("Study group created!");
+    await mathStudyGroup.save();
+    console.log("Original Math study group created!");
 
-    // Assign study group to students
-    await Promise.all(
-      students.map((student) =>
-        User.findByIdAndUpdate(student._id, {
-          $addToSet: { joinedStudyGroups: studyGroup._id },
-        })
-      )
+    // Assign original study group to Alex and Mia only
+    await Promise.all([
+      User.findByIdAndUpdate(students[0]._id, {
+        $addToSet: { joinedStudyGroups: mathStudyGroup._id },
+      }),
+      User.findByIdAndUpdate(students[1]._id, {
+        $addToSet: { joinedStudyGroups: mathStudyGroup._id },
+      }),
+    ]);
+
+    // Create Breezy's study groups
+    const breezyStudyGroups = [
+      {
+        title: "History Deep Dive",
+        subject: "History",
+        description:
+          "Exploring major historical events and their impact on modern society. Focus on analytical thinking and document interpretation.",
+        date: new Date("2025-03-15T14:00:00Z"),
+        time: "2:00 PM",
+        duration: 90,
+        creator: students[2]._id, // Breezy
+        participants: [students[2]._id], // Just Breezy
+      },
+      {
+        title: "Algebra Practice Session",
+        subject: "Algebra",
+        description:
+          "Interactive session working through complex algebraic equations and word problems. Bring your textbook and calculator!",
+        date: new Date("2025-03-16T15:00:00Z"),
+        time: "3:00 PM",
+        duration: 75,
+        creator: students[2]._id,
+        participants: [students[2]._id],
+      },
+      {
+        title: "English Literature Discussion",
+        subject: "English",
+        description:
+          "Book club-style discussion on current reading assignments. We'll analyze themes, characters, and writing techniques.",
+        date: new Date("2025-03-17T13:00:00Z"),
+        time: "1:00 PM",
+        duration: 60,
+        creator: students[2]._id,
+        participants: [students[2]._id],
+      },
+      {
+        title: "Biology Study Session",
+        subject: "Biology",
+        description:
+          "Comprehensive review of cellular biology and genetics. Will include diagram analysis and lab report preparation tips.",
+        date: new Date("2025-03-18T16:00:00Z"),
+        time: "4:00 PM",
+        duration: 120,
+        creator: students[2]._id,
+        participants: [students[2]._id, students[0]._id, students[1]._id], // Breezy, Alex, and Mia
+      },
+      {
+        title: "Chemistry Concepts Review",
+        subject: "Chemistry",
+        description:
+          "Focus on chemical reactions and stoichiometry. Will work through practice problems and lab safety procedures.",
+        date: new Date("2025-03-19T17:00:00Z"),
+        time: "5:00 PM",
+        duration: 90,
+        creator: students[2]._id,
+        participants: [students[2]._id],
+      },
+    ];
+
+    const createdBreezyGroups = await StudyGroup.insertMany(breezyStudyGroups);
+    console.log("Breezy's study groups created!");
+
+    // Update Breezy's joinedStudyGroups
+    await User.findByIdAndUpdate(students[2]._id, {
+      $addToSet: {
+        joinedStudyGroups: {
+          $each: createdBreezyGroups.map((group) => group._id),
+        },
+      },
+    });
+
+    // Update Alex and Mia's joinedStudyGroups to include only the Biology group
+    const biologyGroup = createdBreezyGroups.find(
+      (group) => group.subject === "Biology"
     );
+    await Promise.all([
+      User.findByIdAndUpdate(students[0]._id, {
+        $addToSet: { joinedStudyGroups: biologyGroup._id },
+      }),
+      User.findByIdAndUpdate(students[1]._id, {
+        $addToSet: { joinedStudyGroups: biologyGroup._id },
+      }),
+    ]);
 
-    console.log("Students assigned to study group!");
+    console.log("All study groups assigned to appropriate students!");
 
     // Create tutor availability (4 days)
     const availabilityData = [
