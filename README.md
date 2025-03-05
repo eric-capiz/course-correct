@@ -1,64 +1,104 @@
-# course-correct
+# Course Correct
 
 ## Description
 
-Course Correct is a platform that allows students to find tutors and study groups for their courses.
+Course Correct is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) application that connects students with tutors and study groups. The platform facilitates educational collaboration by allowing students to find tutors based on subjects and availability, as well as join or create study groups.
 
-User Model
-The User Model stores essential information about each user in the app:
+## Features
 
-name, username, email, password: Basic user details.
-role: Specifies whether the user is a student or tutor.
-subjects: List of subjects the user is associated with.
-gradeLevel: User's academic grade (freshman, sophomore, junior, senior).
-tutoringAvailability: References to available times for tutors and only for tutors.
-joinedStudyGroups: References to study groups the user has joined.
+- **User Authentication**: Secure login and registration system
+- **Role-Based Access**: Different interfaces and capabilities for students and tutors
+- **Tutor Booking System**: Calendar-based booking system using FullCalendar
+- **Study Groups**: Create, join, and manage study groups
+- **Responsive Design**: Mobile-first approach ensuring accessibility across all devices
 
-Tutor Model
-The Tutor Model stores information about tutors and their availability:
+## Tech Stack
 
-tutor: References to the User model.
-subject: Subject the tutor is available to teach.
-day: Day of the week the tutor is available.
-gradeLevel: Grade level the tutor is available to tutor.
-startTime: Start time of the tutor's availability.
-endTime: End time of the tutor's availability.
-duration: Duration of the tutor's availability.
+### Frontend
 
-StudyGroup Model
-The StudyGroup Model stores information about study groups:
+- React.js with Next.js
+- Material-UI (MUI) for component design
+- FullCalendar for scheduling
+- Context API for state management
+- TypeScript for type safety
 
-name: Name of the study group.
-description: Description of the study group.
-creator: References to the User model.
-participants: References to the User model of other students in the study group.
-subject: Subject of the study group.
-date: Date of the study group.
-time: Time of the study group.
-duration: Duration of the study group.
+### Backend
 
-TutorBooking Model (will use fullcalendar for the calendar on frontend)
-The TutorBooking Model stores information about tutor bookings:
+- Node.js with Express
+- MongoDB for database
+- JWT for authentication
+- RESTful API architecture
 
-student: References to the User model.
-tutor: References to the User model.
-subject: Subject of the booking.
-duration: Duration of the booking.
-bookingTime: Time of the booking.
-status: Status of the booking.
+## Data Models
 
-frontend notes:
-Tutors will set their availability by selecting a day, start & end time, and subject. If they add multiple subjects on the same day, the next subject must start at or after the previous one ends (no overlapping).
-Time selection for tutors and students should be in 15-minute increments (:00, :15, :30, :45).
-Students will begin booking by selecting a subject, then a start time filtered by tutor availability.
-Only tutors available for that subject at the selected time will be shown.
-If students book multiple subjects, each subject’s start time must be at or after the previous subject’s end time.
-FullCalendar should handle availability display and prevent invalid selections (like overlapping times).
+### User Model
 
-<!-- FUTURE FEATURE:
-1. Study Guides and Notes Upload
-Tutors Uploading Study Guides: Tutors will be able to upload study materials, guides, or resources specific to certain classes or grade levels. These resources will be easily accessible for students looking to supplement their learning.
-Students Uploading Notes: Students can upload their own notes for the same classes or grade levels. This fosters a peer-to-peer learning environment, where students can help each other.
+- Basic Info: name, username, email, password
+- Role: student/tutor
+- Academic Info: subjects, gradeLevel
+- Relationships: tutoringAvailability, joinedStudyGroups
 
-2. Expanding Beyond Classroom Learning
-Professional "Classes" and Career Development: The app could evolve into a platform where professionals from various industries (e.g., mechanics, chefs, artists) can offer workshops or training sessions outside of the traditional classroom. For example, a mechanic could post an opportunity saying, "Anyone interested in becoming a mechanic, I'll volunteer my time to teach the basics and even offer some hands-on experience." This way, people can provide practical career development or mentorship for anyone interested in learning a new skill. -->
+### Tutor Model
+
+- Tutor reference (User model)
+- Subject availability
+- Schedule: day, startTime, endTime
+- Duration and grade level specifications
+
+### StudyGroup Model
+
+- Group details: name, description
+- Creator and participants (User references)
+- Academic info: subject
+- Schedule: date, time, duration
+
+### TutorBooking Model
+
+- Student and tutor references
+- Booking details: subject, duration
+- Schedule: bookingTime
+- Status tracking
+
+## Key Features Implementation
+
+### Tutor Availability System
+
+- 15-minute increment time slots
+- No overlapping sessions
+- Subject-specific availability
+
+### Booking System
+
+- Subject-first booking approach
+- Filtered tutor availability
+- Sequential booking validation
+- FullCalendar integration
+
+## Future Features
+
+1. Study Materials Platform
+
+   - Tutor-uploaded study guides
+   - Student note sharing
+   - Resource management
+
+2. Career Development Extension
+   - Professional workshops
+   - Practical skill training
+   - Industry mentorship opportunities
+
+## Installation
+
+[Installation instructions to be added]
+
+## Usage
+
+[Usage instructions to be added]
+
+## Contributing
+
+[Contribution guidelines to be added]
+
+## License
+
+[License information to be added]
