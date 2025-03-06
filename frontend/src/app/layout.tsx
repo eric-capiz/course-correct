@@ -3,6 +3,7 @@ import AuthProvider from "@/context/auth/authContext";
 import UserProvider from "@/context/users/userContext";
 import BookingProvider from "@/context/booking/bookingContext";
 import StudyGroupProvider from "@/context/studyGroup/studyGroupContext";
+import TutorAvailabilityProvider from "@/context/tutorAvailability/tutorAvailabilityContext";
 import Footer from "@/components/global/Footer";
 import Navbar from "@/components/global/Navbar";
 import "./globals.css";
@@ -24,17 +25,19 @@ export default function RootLayout({
           <UserProvider>
             <BookingProvider>
               <StudyGroupProvider>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    minHeight: "100vh",
-                  }}
-                >
-                  <Navbar />
-                  <main style={{ flex: "1" }}>{children}</main>
-                  <Footer />
-                </div>
+                <TutorAvailabilityProvider>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      minHeight: "100vh",
+                    }}
+                  >
+                    <Navbar />
+                    <main style={{ flex: "1" }}>{children}</main>
+                    <Footer />
+                  </div>
+                </TutorAvailabilityProvider>
               </StudyGroupProvider>
             </BookingProvider>
           </UserProvider>

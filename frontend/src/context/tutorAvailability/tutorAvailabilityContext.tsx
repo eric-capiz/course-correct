@@ -142,3 +142,5 @@ export const useTutorAvailability = () => {
   }
   return context;
 };
+
+export default TutorAvailabilityProvider;

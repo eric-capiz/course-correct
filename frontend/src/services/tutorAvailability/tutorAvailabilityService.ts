@@ -1,7 +1,7 @@
 import api from "@/config/axiosConfig";
 
 export interface AvailabilitySlot {
-  _id?: string;
+  _id: string;
   tutor: string;
   day: string;
   subject: string;
@@ -12,24 +12,16 @@ export interface AvailabilitySlot {
   updatedAt?: string;
 }
 
-interface CreateAvailabilityData {
-  day: string;
-  subject: string;
-  startTime: string;
-  endTime: string;
-}
-
 interface UpdateAvailabilityData {
   subject?: string;
   startTime?: string;
   endTime?: string;
-  disableDay?: boolean;
   isActive?: boolean;
 }
 
 // Add new availability slots
 export const addAvailability = async (
-  availability: CreateAvailabilityData[]
+  availability: Omit<AvailabilitySlot, "_id" | "tutor">[]
 ): Promise<{ message: string }> => {
   try {
     const response = await api.post("/api/tutors/availability", {

@@ -1,70 +1,59 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 interface DateTimePickerProps {
   selectedDateTime: Date | null;
-  onDateTimeChange: (date: Date) => void;
+  onDateTimeChange: (date: Date | null) => void;
+  selectedDate: Date;
 }
 
 const DateTimePicker = ({
   selectedDateTime,
   onDateTimeChange,
+  selectedDate,
 }: DateTimePickerProps) => {
-  const initialDate = selectedDateTime || new Date();
-  const [month, setMonth] = useState<number>(initialDate.getMonth());
-  const [day, setDay] = useState<number>(initialDate.getDate());
-  const [time, setTime] = useState<string>("9:00 AM");
-
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const getDaysInMonth = (month: number) => {
-    return new Date(new Date().getFullYear(), month + 1, 0).getDate();
-  };
+  const currentDate = selectedDate || new Date();
+  const month = currentDate.toLocaleString("default", { month: "long" });
+  const day = currentDate.getDate();
 
   const generateTimeSlots = () => {
-    const slots = [];
-    // Generate times from 9 AM to 9 PM
-    for (let hour = 9; hour <= 21; hour++) {
-      const period = hour >= 12 ? "PM" : "AM";
-      const hour12 = hour > 12 ? hour - 12 : hour;
-      for (let minute = 0; minute < 60; minute += 15) {
-        slots.push(`${hour12}:${minute.toString().padStart(2, "0")} ${period}`);
+    const times = [];
+    // Start from 6 AM (6) to 10 PM (22)
+    for (let hour = 6; hour <= 22; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const time = new Date();
+        time.setHours(hour, minute);
+        times.push({
+          label: time.toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }),
+          value: time,
+        });
       }
     }
-    return slots;
+    return times;
   };
 
-  useEffect(() => {
-    const [timeStr, period] = time.split(" ");
-    const [hours, minutes] = timeStr.split(":").map(Number);
-    let hours24 = hours;
+  const handleTimeChange = (timeString: string) => {
+    const [time, period] = timeString.split(" ");
+    const [hours, minutes] = time.split(":");
 
-    if (period === "PM" && hours !== 12) hours24 += 12;
-    if (period === "AM" && hours === 12) hours24 = 0;
+    const newDate = new Date(selectedDate);
+    let hour = parseInt(hours);
 
-    const newDate = new Date();
-    newDate.setFullYear(new Date().getFullYear());
-    newDate.setMonth(month);
-    newDate.setDate(day);
-    newDate.setHours(hours24, minutes, 0, 0);
+    // Convert to 24-hour format
+    if (period === "PM" && hour !== 12) {
+      hour += 12;
+    } else if (period === "AM" && hour === 12) {
+      hour = 0;
+    }
 
+    newDate.setHours(hour, parseInt(minutes), 0, 0);
     onDateTimeChange(newDate);
-  }, [month, day, time]);
+  };
 
   return (
     <Box
@@ -74,68 +63,51 @@ const DateTimePicker = ({
         flexDirection: { xs: "column", sm: "row" },
         "& .MuiFormControl-root": {
           width: { xs: "100%", sm: "auto" },
-          minWidth: { sm: 80 },
-        },
-        "& .MuiSelect-select": {
-          fontSize: { xs: "0.9rem", sm: "1rem" },
         },
       }}
     >
-      <FormControl size="small">
-        <InputLabel id="month-label">Month</InputLabel>
+      <FormControl>
+        <InputLabel>Month</InputLabel>
         <Select
-          labelId="month-label"
           value={month}
           label="Month"
-          onChange={(e) => setMonth(Number(e.target.value))}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                maxHeight: 300,
-              },
-            },
-          }}
+          disabled
+          sx={{ minWidth: { xs: "100%", sm: 120 } }}
         >
-          {months.map((monthName, index) => (
-            <MenuItem key={monthName} value={index}>
-              {monthName}
-            </MenuItem>
-          ))}
+          <MenuItem value={month}>{month}</MenuItem>
         </Select>
       </FormControl>
 
-      <FormControl size="small">
-        <InputLabel id="day-label">Day</InputLabel>
+      <FormControl>
+        <InputLabel>Day</InputLabel>
         <Select
-          labelId="day-label"
           value={day}
           label="Day"
-          onChange={(e) => setDay(Number(e.target.value))}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                maxHeight: 300,
-              },
-            },
-          }}
+          disabled
+          sx={{ minWidth: { xs: "100%", sm: 80 } }}
         >
-          {Array.from({ length: getDaysInMonth(month) }, (_, i) => i + 1).map(
-            (d) => (
-              <MenuItem key={d} value={d}>
-                {d}
-              </MenuItem>
-            )
-          )}
+          <MenuItem value={day}>{day}</MenuItem>
         </Select>
       </FormControl>
 
-      <FormControl size="small">
-        <InputLabel id="time-label">Time</InputLabel>
+      <FormControl>
+        <InputLabel>Time</InputLabel>
         <Select
-          labelId="time-label"
-          value={time}
+          value={
+            selectedDateTime?.toLocaleTimeString([], {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            }) || ""
+          }
           label="Time"
-          onChange={(e) => setTime(e.target.value)}
+          onChange={(e) => handleTimeChange(e.target.value)}
+          sx={{
+            minWidth: { xs: "100%", sm: 140 },
+            "& .MuiSelect-select": {
+              py: 1.5,
+            },
+          }}
           MenuProps={{
             PaperProps: {
               style: {
@@ -144,9 +116,9 @@ const DateTimePicker = ({
             },
           }}
         >
-          {generateTimeSlots().map((timeSlot) => (
-            <MenuItem key={timeSlot} value={timeSlot}>
-              {timeSlot}
+          {generateTimeSlots().map(({ label }) => (
+            <MenuItem key={label} value={label} sx={{ py: 1 }}>
+              {label}
             </MenuItem>
           ))}
         </Select>

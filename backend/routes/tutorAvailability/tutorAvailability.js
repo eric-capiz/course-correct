@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../../models/user/User");
 const Availability = require("../../models/tutorAvailability/tutorAvailbility");
 const TutorBooking = require("../../models/tutorBooking/TutorBooking");
 const authMiddleware = require("../../middlware/auth");
@@ -18,6 +19,7 @@ router.post("/availability", authMiddleware, async (req, res) => {
     }
 
     const tutorId = req.user.id;
+    const createdSlots = []; // Array to store created availability slots
 
     for (let slot of availability) {
       const { day, subject, startTime, endTime } = slot;
@@ -48,26 +50,29 @@ router.post("/availability", authMiddleware, async (req, res) => {
         });
       }
 
-      const duration = (new Date(endTime) - new Date(startTime)) / 60000;
-
+      // Create new availability slot
       const newAvailability = new Availability({
         tutor: tutorId,
         day,
         subject,
         startTime,
         endTime,
-        duration,
-        isActive: false, // Default is inactive
+        isActive: true, // Changed to true since we're actively creating it
       });
 
-      await newAvailability.save();
+      const savedSlot = await newAvailability.save();
+      createdSlots.push(savedSlot._id);
     }
 
+    // Update the user's tutoringAvailability array with the new slots
     await User.findByIdAndUpdate(tutorId, {
-      $push: { tutoringAvailability: { $each: createdAvailability } },
+      $push: { tutoringAvailability: { $each: createdSlots } },
     });
 
-    res.status(201).json({ message: "Availability added successfully" });
+    res.status(201).json({
+      message: "Availability added successfully",
+      slots: createdSlots,
+    });
   } catch (err) {
     console.error("Error adding availability:", err);
     res.status(500).json({ message: "Server error" });
