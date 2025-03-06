@@ -24,11 +24,9 @@ export const addAvailability = async (
   availability: Omit<AvailabilitySlot, "_id" | "tutor">[]
 ): Promise<{ message: string }> => {
   try {
-    console.log("Service sending to API:", availability);
     const response = await api.post("/api/tutors/availability", {
       availability,
     });
-    console.log("Service received from API:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error adding availability:", error);

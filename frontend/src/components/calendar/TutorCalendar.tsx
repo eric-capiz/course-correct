@@ -17,7 +17,6 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
   const { availability, getAvailability } = useTutorAvailability();
 
   useEffect(() => {
-    // Only fetch if we don't already have availability data
     if (!availability.length) {
       getAvailability().catch((err) =>
         console.error("Error fetching availability:", err)
