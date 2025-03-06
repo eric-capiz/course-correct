@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  Box,
-  Typography,
-  Button,
-  Container,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Typography, Container, CircularProgress } from "@mui/material";
 import { useAuth } from "@/context/auth/authContext";
 
 const Hero = () => {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
 
   if (loading) {
     return (
@@ -68,88 +62,6 @@ const Hero = () => {
           Course Correct is your all-in-one platform to collaborate, form study
           groups, and book tutoring sessions seamlessly.
         </Typography>
-        {user && ( // Only render buttons if user is logged in
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              justifyContent: "center",
-              gap: 2,
-              mt: 4,
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                flexDirection: { xs: "column", sm: "row" },
-              }}
-            >
-              {user.role === "student" ? (
-                // Student buttons
-                <>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "var(--button-primary-bg)",
-                      color: "#fff",
-                      padding: { xs: "10px 18px", md: "12px 24px" },
-                      fontSize: { xs: "0.9rem", md: "1rem" },
-                      fontWeight: 600,
-                      borderRadius: "8px",
-                      width: { xs: "100%", sm: "auto" },
-                      "&:hover": {
-                        backgroundColor: "var(--button-primary-hover)",
-                      },
-                    }}
-                    aria-label="Book Tutor Session"
-                  >
-                    Book Tutor Session
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      borderColor: "var(--button-secondary-bg)",
-                      color: "var(--button-secondary-bg)",
-                      padding: { xs: "10px 18px", md: "12px 24px" },
-                      fontSize: { xs: "0.9rem", md: "1rem" },
-                      fontWeight: 600,
-                      borderRadius: "8px",
-                      width: { xs: "100%", sm: "auto" },
-                      "&:hover": {
-                        backgroundColor: "var(--button-secondary-hover)",
-                        color: "#fff",
-                      },
-                    }}
-                    aria-label="Create a Study Group"
-                  >
-                    Create Study Group
-                  </Button>
-                </>
-              ) : user.role === "tutor" ? (
-                // Tutor button
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "var(--button-primary-bg)",
-                    color: "#fff",
-                    padding: { xs: "10px 18px", md: "12px 24px" },
-                    fontSize: { xs: "0.9rem", md: "1rem" },
-                    fontWeight: 600,
-                    borderRadius: "8px",
-                    width: { xs: "100%", sm: "auto" },
-                    "&:hover": {
-                      backgroundColor: "var(--button-primary-hover)",
-                    },
-                  }}
-                  aria-label="Add Tutor Availability"
-                >
-                  Add Tutor Availability
-                </Button>
-              ) : null}
-            </Box>
-          </Box>
-        )}
       </Container>
     </Box>
   );

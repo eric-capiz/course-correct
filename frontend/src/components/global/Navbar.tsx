@@ -9,7 +9,6 @@ import {
   Typography,
   Button,
   IconButton,
-  InputBase,
   Drawer,
   List,
   ListItem,
@@ -19,13 +18,11 @@ import {
   CircularProgress,
 } from "@mui/material";
 import {
-  Search,
   AccountCircle,
   Menu as MenuIcon,
-  Group,
-  School,
   Login,
   PersonAdd,
+  Hub,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useAuth } from "@/context/auth/authContext";
@@ -41,6 +38,32 @@ const Navbar = () => {
     str.charAt(0).toUpperCase() + str.slice(1);
 
   const toggleAuthMode = () => setIsLogin((prev) => !prev);
+
+  const renderLearningHubButton = (user) => {
+    if (!user || user.role !== "student") return null;
+
+    return (
+      <Button
+        variant="outlined"
+        sx={{
+          borderColor: "var(--primary-color)",
+          color: "var(--primary-color)",
+          whiteSpace: "nowrap",
+          minWidth: "85px",
+          padding: "6px 14px",
+          "&:hover": {
+            backgroundColor: "var(--primary-color)",
+            color: "#fff",
+          },
+        }}
+        aria-label="Go to Learning Hub"
+        component={Link}
+        href="/learning-hub"
+      >
+        Learning Hub
+      </Button>
+    );
+  };
 
   if (loading) {
     return (
@@ -90,30 +113,10 @@ const Navbar = () => {
             </Link>
           </Typography>
 
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              border: "1px solid var(--secondary-color)",
-              borderRadius: "8px",
-              px: 2,
-              py: 0.5,
-              width: "100%",
-              maxWidth: { xs: "100%", sm: "70%", md: "50%" },
-              mx: "auto",
-            }}
-          >
-            <Search sx={{ color: "var(--secondary-color)" }} />
-            <InputBase
-              placeholder="Search for tutors, study groups..."
-              sx={{ ml: 1, flex: 1, fontSize: "0.9rem" }}
-              inputProps={{ "aria-label": "Search for tutors, study groups" }}
-            />
-          </Box>
-
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             {user ? (
               <>
+                {renderLearningHubButton(user)}
                 <Button
                   variant="outlined"
                   sx={{
@@ -229,27 +232,6 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
 
-      <Box
-        sx={{
-          display: { xs: "flex", md: "none" },
-          alignItems: "center",
-          justifyContent: "center",
-          border: "1px solid var(--secondary-color)",
-          borderRadius: "8px",
-          px: 2,
-          py: 0.5,
-          mt: 1,
-          mx: 2,
-        }}
-      >
-        <Search sx={{ color: "var(--secondary-color)" }} />
-        <InputBase
-          placeholder="Search for tutors, study groups..."
-          sx={{ ml: 1, flex: 1, fontSize: "0.9rem" }}
-          inputProps={{ "aria-label": "Search for tutors, study groups" }}
-        />
-      </Box>
-
       <Drawer
         anchor="right"
         open={menuOpen}
@@ -264,6 +246,21 @@ const Navbar = () => {
           <List>
             {user ? (
               <>
+                {user.role === "student" && (
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      component={Link}
+                      href="/learning-hub"
+                      onClick={() => setMenuOpen(false)}
+                      aria-label="Go to Learning Hub"
+                    >
+                      <ListItemIcon>
+                        <Hub />
+                      </ListItemIcon>
+                      <ListItemText primary="Learning Hub" />
+                    </ListItemButton>
+                  </ListItem>
+                )}
                 <ListItem disablePadding>
                   <ListItemButton
                     component={Link}
@@ -328,32 +325,6 @@ const Navbar = () => {
                 </ListItem>
               </>
             )}
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                href="/study-group"
-                onClick={() => setMenuOpen(false)}
-                aria-label="Create a study group"
-              >
-                <ListItemIcon>
-                  <Group />
-                </ListItemIcon>
-                <ListItemText primary="Create Study Group" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                href="/book-tutor"
-                onClick={() => setMenuOpen(false)}
-                aria-label="Book a tutor"
-              >
-                <ListItemIcon>
-                  <School />
-                </ListItemIcon>
-                <ListItemText primary="Book Tutor" />
-              </ListItemButton>
-            </ListItem>
           </List>
         </Box>
       </Drawer>

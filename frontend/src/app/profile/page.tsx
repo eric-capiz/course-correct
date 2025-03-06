@@ -10,7 +10,6 @@ import EditProfileDialog from "@/components/modals/EditProfile";
 import { Container, Box } from "@mui/material";
 import ProfileDetails from "@/components/profile/ProfileDetails";
 import StudyGroups from "@/components/profile/StudyGroups";
-import StudyGroupCarousel from "@/components/profile/StudyGroupCarousel";
 import TutorAvailability from "@/components/profile/TutorAvailability";
 import TutorSessions from "@/components/profile/TutorSessions";
 import { useState } from "react";
@@ -19,13 +18,8 @@ const Profile = () => {
   const { user: authUser, loading: authLoading } = useAuth();
   const { user, fetchUser, updateUser } = useUser();
   const { bookings, updateSession } = useBooking();
-  const {
-    studyGroups,
-    getAllStudyGroups,
-    leaveStudyGroup,
-    joinStudyGroup,
-    deleteStudyGroup,
-  } = useStudyGroup();
+  const { studyGroups, getAllStudyGroups, leaveStudyGroup, deleteStudyGroup } =
+    useStudyGroup();
   const router = useRouter();
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
@@ -58,15 +52,6 @@ const Profile = () => {
     );
   }, [user?._id, studyGroups]);
 
-  // Memoize available study groups
-  const availableStudyGroups = useMemo(() => {
-    if (!user?._id || !studyGroups.length) return [];
-    return studyGroups.filter(
-      (group) =>
-        !group.participants.some((participant) => participant._id === user._id)
-    );
-  }, [user?._id, studyGroups]);
-
   return (
     <Container maxWidth="lg" sx={{ py: 6 }} role="main">
       {/* First row with two columns */}
@@ -95,15 +80,6 @@ const Profile = () => {
           />
         </Box>
       </Box>
-
-      {/* Study Group Carousel */}
-      <StudyGroupCarousel
-        user={user}
-        availableStudyGroups={availableStudyGroups}
-        joinStudyGroup={joinStudyGroup}
-        getAllStudyGroups={getAllStudyGroups}
-      />
-
       <EditProfileDialog
         open={openEditDialog}
         onClose={() => setOpenEditDialog(false)}
