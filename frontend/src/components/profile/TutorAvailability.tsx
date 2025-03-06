@@ -27,10 +27,9 @@ const TutorAvailability = ({ user }: TutorAvailabilityProps) => {
   };
 
   const selectedDateSlots = selectedDate
-    ? availability.filter(
-        (slot) =>
-          new Date(slot.day).toDateString() === selectedDate.toDateString()
-      )
+    ? availability.filter((slot) => {
+        return slot.day === selectedDate.toLocaleDateString("en-CA");
+      })
     : [];
 
   return (
@@ -89,26 +88,52 @@ const TutorAvailability = ({ user }: TutorAvailabilityProps) => {
                   />
                 ) : selectedDateSlots.length > 0 ? (
                   <Box>
-                    {selectedDateSlots.map((slot) => (
-                      <Box
-                        key={slot._id}
-                        sx={{
-                          p: 2,
-                          mb: 1,
-                          border: 1,
-                          borderColor: "divider",
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Typography variant="subtitle1">
-                          {slot.subject}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {new Date(slot.startTime).toLocaleTimeString()} -
-                          {new Date(slot.endTime).toLocaleTimeString()}
-                        </Typography>
-                      </Box>
-                    ))}
+                    {selectedDateSlots.map((slot) => {
+                      const displayDate = new Date(slot.startTime);
+                      displayDate.setDate(displayDate.getDate());
+
+                      return (
+                        <Box
+                          key={slot._id}
+                          sx={{
+                            p: 2,
+                            mb: 1,
+                            border: 1,
+                            borderColor: "divider",
+                            borderRadius: 1,
+                          }}
+                        >
+                          <Typography variant="subtitle1">
+                            {slot.subject}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 0.5 }}
+                          >
+                            {displayDate.toLocaleDateString("en-US", {
+                              weekday: "long",
+                              month: "long",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {new Date(slot.startTime).toLocaleString("en-US", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}{" "}
+                            -
+                            {new Date(slot.endTime).toLocaleString("en-US", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
                   </Box>
                 ) : (
                   <Typography color="text.secondary">

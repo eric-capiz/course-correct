@@ -133,6 +133,7 @@ const TutorSessions = ({ user, bookings, updateSession }) => {
                           </>
                         )}
                         {user?.role === "student" &&
+                          booking.extendedProps.status !== "completed" &&
                           booking.extendedProps.status !== "cancelled" && (
                             <Button
                               variant="contained"

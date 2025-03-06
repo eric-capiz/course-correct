@@ -240,16 +240,30 @@ const seedData = async () => {
         const subject =
           tutor.subjects[Math.floor(Math.random() * tutor.subjects.length)];
 
+        // Create the date objects
         const startTime = new Date(currentYear, currentMonth, day, hour);
-        const endTime = new Date(startTime);
-        endTime.setHours(endTime.getHours() + 1); // 1-hour slots
+        const endTime = new Date(currentYear, currentMonth, day, hour + 1);
 
         slots.push({
           tutor: tutor._id,
-          day: startTime.toISOString().split("T")[0],
+          day: startTime.toLocaleDateString("en-CA"),
           subject,
-          startTime: startTime.toISOString(),
-          endTime: endTime.toISOString(),
+          startTime: startTime.toLocaleString("en-US", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          }),
+          endTime: endTime.toLocaleString("en-US", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          }),
           isActive: true,
         });
       }
@@ -316,7 +330,14 @@ const seedData = async () => {
         student: student._id,
         tutor: slot.tutor,
         subject: slot.subject,
-        bookingTime: slot.startTime,
+        bookingTime: new Date(slot.startTime).toLocaleString("en-US", {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        }),
         duration: 60,
         status:
           bookingStatuses[Math.floor(Math.random() * bookingStatuses.length)],

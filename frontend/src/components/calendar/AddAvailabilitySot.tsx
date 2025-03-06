@@ -60,12 +60,37 @@ const AddAvailabilitySlot = ({
     }
 
     try {
+      // Create the dates in local time, ensuring we use the selected date
+      const localStartTime = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        startTime.getHours(),
+        startTime.getMinutes()
+      );
+
+      const localEndTime = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        endTime.getHours(),
+        endTime.getMinutes()
+      );
+
+      // Log the dates for debugging
+      console.log("Availability Slot Creation:", {
+        selectedDate: selectedDate.toLocaleDateString(),
+        formattedDay: selectedDate.toISOString().split("T")[0],
+        startTime: localStartTime.toLocaleString(),
+        endTime: localEndTime.toLocaleString(),
+      });
+
       await addAvailability([
         {
-          day: selectedDate.toISOString().split("T")[0],
+          day: selectedDate.toLocaleDateString("en-CA"),
           subject: selectedSubject,
-          startTime: startTime.toISOString(),
-          endTime: endTime.toISOString(),
+          startTime: localStartTime.toLocaleString(),
+          endTime: localEndTime.toLocaleString(),
           isActive: true,
         },
       ]);

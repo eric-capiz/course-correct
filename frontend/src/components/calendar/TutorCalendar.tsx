@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Paper, Grid, IconButton } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { visuallyHidden } from "@mui/utils";
+import { useTutorAvailability } from "@/context/tutorAvailability/tutorAvailabilityContext";
 
 interface TutorCalendarProps {
   onDateSelect: (date: Date) => void;
@@ -13,6 +14,16 @@ interface TutorCalendarProps {
 
 const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const { availability, getAvailability } = useTutorAvailability();
+
+  useEffect(() => {
+    // Only fetch if we don't already have availability data
+    if (!availability.length) {
+      getAvailability().catch((err) =>
+        console.error("Error fetching availability:", err)
+      );
+    }
+  }, [getAvailability, availability.length]);
 
   // Get current month details
   const currentMonth = currentDate.getMonth();
@@ -24,6 +35,23 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
   // Generate days array for the current month
   const daysInMonth = lastDayOfMonth.getDate();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  // Check if a date has any availability slots
+  const hasAvailabilitySlots = (date: Date) => {
+    // Format the date to YYYY-MM-DD for comparison
+    const dateString = date.toISOString().split("T")[0];
+
+    // Filter slots for this day
+    const slotsForDay = availability.filter((slot) => {
+      // Parse the slot's startTime to get its date
+      const slotDate = new Date(slot.startTime);
+      const slotDateString = slotDate.toISOString().split("T")[0];
+
+      return slotDateString === dateString;
+    });
+
+    return slotsForDay.length > 0;
+  };
 
   // Navigation handlers
   const handlePreviousMonth = () => {
@@ -104,6 +132,7 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
           const isPastOrToday = date < tomorrow;
           const isSelected =
             selectedDate?.toDateString() === date.toDateString();
+          const hasSlots = hasAvailabilitySlots(date);
 
           return (
             <Grid item xs={12 / 7} key={day} role="gridcell">
@@ -121,8 +150,11 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
                   month: "long",
                   day: "numeric",
                   year: "numeric",
-                })}${isPastOrToday ? ", not available" : ""}`}
+                })}${isPastOrToday ? ", not available" : ""}${
+                  hasSlots ? ", has availability slots" : ""
+                }`}
                 sx={{
+                  position: "relative",
                   p: { xs: 0.5, sm: 1 },
                   borderRadius: 1,
                   cursor: isPastOrToday ? "not-allowed" : "pointer",
@@ -146,6 +178,19 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
                   justifyContent: "center",
                   alignItems: "center",
                   minHeight: { xs: 32, sm: 40 },
+                  "&::after":
+                    hasSlots && !isPastOrToday
+                      ? {
+                          content: '""',
+                          position: "absolute",
+                          bottom: "2px",
+                          left: "20%",
+                          width: "60%",
+                          height: "2px",
+                          backgroundColor: "warning.light",
+                          borderRadius: "2px",
+                        }
+                      : {},
                 }}
               >
                 <Typography sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}>

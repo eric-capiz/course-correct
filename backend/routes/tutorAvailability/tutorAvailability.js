@@ -19,13 +19,17 @@ router.post("/availability", authMiddleware, async (req, res) => {
     }
 
     const tutorId = req.user.id;
-    const createdSlots = []; // Array to store created availability slots
+    const createdSlots = [];
 
     for (let slot of availability) {
       const { day, subject, startTime, endTime } = slot;
 
+      // Create dates from the local time strings
+      const startDate = new Date(startTime);
+      const endDate = new Date(endTime);
+
       // Validate that start time is not in the past
-      if (new Date(startTime) < new Date()) {
+      if (startDate < new Date()) {
         return res
           .status(400)
           .json({ message: "Start time cannot be in the past" });
@@ -44,27 +48,27 @@ router.post("/availability", authMiddleware, async (req, res) => {
         earliestAvailableStartTime = lastSlot.endTime;
       }
 
-      if (new Date(startTime) < new Date(earliestAvailableStartTime)) {
+      if (startDate < new Date(earliestAvailableStartTime)) {
         return res.status(400).json({
           message: `The start time for ${subject} must be after ${earliestAvailableStartTime}.`,
         });
       }
 
-      // Create new availability slot
+      // Create new availability slot with the original time strings
       const newAvailability = new Availability({
         tutor: tutorId,
         day,
         subject,
-        startTime,
-        endTime,
-        isActive: true, // Changed to true since we're actively creating it
+        startTime, // Store the local time string directly
+        endTime, // Store the local time string directly
+        isActive: true,
       });
 
       const savedSlot = await newAvailability.save();
       createdSlots.push(savedSlot._id);
     }
 
-    // Update the user's tutoringAvailability array with the new slots
+    // Update the user's tutoringAvailability array
     await User.findByIdAndUpdate(tutorId, {
       $push: { tutoringAvailability: { $each: createdSlots } },
     });

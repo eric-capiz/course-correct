@@ -56,7 +56,9 @@ export const TutorAvailabilityProvider = ({
     setError(null);
     try {
       await addAvailabilityService(slots);
-      await getAvailability(); // Refresh the list
+      const newData = await getAvailabilityService();
+
+      setAvailability(newData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       throw err;
