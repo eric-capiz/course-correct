@@ -13,6 +13,7 @@ import {
   getAvailability as getAvailabilityService,
   updateAvailability as updateAvailabilityService,
   deleteAvailability as deleteAvailabilityService,
+  getAllTutorsAvailability as getAllTutorsAvailabilityService,
 } from "@/services/tutorAvailability/tutorAvailabilityService";
 
 interface TutorAvailabilityContextType {
@@ -23,6 +24,7 @@ interface TutorAvailabilityContextType {
     slots: Omit<AvailabilitySlot, "_id" | "tutor">[]
   ) => Promise<void>;
   getAvailability: () => Promise<void>;
+  getAllTutorsAvailability: () => Promise<void>;
   updateAvailability: (
     id: string,
     updates: {
@@ -81,6 +83,20 @@ export const TutorAvailabilityProvider = ({
     }
   }, []);
 
+  const getAllTutorsAvailability = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getAllTutorsAvailabilityService();
+      setAvailability(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const updateAvailability = async (
     id: string,
     updates: {
@@ -126,6 +142,7 @@ export const TutorAvailabilityProvider = ({
         error,
         addAvailability,
         getAvailability,
+        getAllTutorsAvailability,
         updateAvailability,
         deleteAvailability,
       }}

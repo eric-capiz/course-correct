@@ -2,7 +2,12 @@ import api from "@/config/axiosConfig";
 
 export interface AvailabilitySlot {
   _id: string;
-  tutor: string;
+  tutor: {
+    _id: string;
+    name: string;
+    subjects: string[];
+    gradeLevel: string;
+  };
   day: string;
   subject: string;
   startTime: string;
@@ -68,6 +73,19 @@ export const deleteAvailability = async (
     return response.data;
   } catch (error) {
     console.error("Error deleting availability:", error);
+    throw error;
+  }
+};
+
+// Get all tutors' availability (for students)
+export const getAllTutorsAvailability = async (): Promise<
+  AvailabilitySlot[]
+> => {
+  try {
+    const response = await api.get("/api/tutors/availability/all");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all tutors availability:", error);
     throw error;
   }
 };

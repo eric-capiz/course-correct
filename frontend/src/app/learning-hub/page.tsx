@@ -6,6 +6,7 @@ import { useAuth } from "@/context/auth/authContext";
 import { useRouter } from "next/navigation";
 import StudyGroupForm from "@/components/learningHub/StudyGroupForms";
 import StudyGroupCarousel from "@/components/profile/StudyGroupCarousel";
+import TutorAvailabilityCards from "@/components/learningHub/TutorAvailbilityCards";
 import { useStudyGroup } from "@/context/studyGroup/studyGroupContext";
 import { useState } from "react";
 
@@ -101,9 +102,9 @@ const LearningHub = () => {
 
       <Box role="tabpanel" hidden={activeTab !== 2}>
         {activeTab === 2 && (
-          <Typography variant="h6" color="text.secondary" textAlign="center">
-            Tutor booking section coming soon...
-          </Typography>
+          <Box sx={{ maxWidth: "xl", mx: "auto" }}>
+            <TutorAvailabilityCards />
+          </Box>
         )}
       </Box>
     </Container>

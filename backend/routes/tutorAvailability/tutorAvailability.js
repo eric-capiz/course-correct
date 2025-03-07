@@ -217,4 +217,27 @@ router.delete("/availability/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// @route   GET /api/tutors/availability/all
+// @desc    Get all tutors' availability (for students to book)
+// @access  Private (students only)
+router.get("/availability/all", authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== "student") {
+      return res
+        .status(403)
+        .json({ message: "Only students can view all tutors' availability" });
+    }
+
+    // Get all active availability slots and populate tutor info
+    const allAvailability = await Availability.find({ isActive: true })
+      .populate("tutor", "name subjects gradeLevel") // Include tutor details we want to show
+      .sort({ day: 1, startTime: 1 }); // Sort by date and time
+
+    res.json(allAvailability);
+  } catch (err) {
+    console.error("Error fetching all tutors availability:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;
