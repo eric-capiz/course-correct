@@ -22,7 +22,6 @@ const TutorBookingSchema = new mongoose.Schema(
     },
     duration: {
       type: Number,
-      required: true,
     },
     status: {
       type: String,

@@ -14,6 +14,8 @@ interface CreateBookingData {
   tutor: string;
   subject: string;
   bookingTime: string;
+  availabilityId: string;
+  duration: number;
 }
 
 // Create a new tutor booking (Student only)

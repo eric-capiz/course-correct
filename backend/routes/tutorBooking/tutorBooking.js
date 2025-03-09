@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const TutorBooking = require("../../models/tutorBooking/TutorBooking");
+const Availability = require("../../models/tutorAvailability/tutorAvailbility");
+const User = require("../../models/user/User");
 const authMiddleware = require("../../middlware/auth");
 
 // @route   POST /api/bookings
@@ -8,17 +10,27 @@ const authMiddleware = require("../../middlware/auth");
 // @access  Private (students only)
 router.post("/", authMiddleware, async (req, res) => {
   try {
-    const { tutor, subject, bookingTime } = req.body;
+    const { tutor, subject, bookingTime, availabilityId, duration } = req.body;
 
     if (req.user.role !== "student") {
       return res.status(403).json({ message: "Only students can book tutors" });
     }
+
+    // Mark the availability slot as inactive
+    const availabilitySlot = await Availability.findById(availabilityId);
+    if (!availabilitySlot) {
+      return res.status(404).json({ message: "Availability slot not found" });
+    }
+
+    availabilitySlot.isActive = false;
+    await availabilitySlot.save();
 
     const booking = new TutorBooking({
       student: req.user.id,
       tutor,
       subject,
       bookingTime,
+      duration,
       status: "pending",
     });
 
