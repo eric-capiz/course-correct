@@ -15,8 +15,8 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://course-correct-ec.vercel.app",
-      "https://course-correct-git-main-ericcapiz.vercel.app",
-      "https://course-correct-ericcapiz.vercel.app",
+      "course-correct-kz25-git-main-eric-capizs-projects.vercel.app",
+      "course-correct-kz25-lqtjreu2x-eric-capizs-projects.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
