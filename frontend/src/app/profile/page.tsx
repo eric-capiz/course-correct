@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/auth/authContext";
 import { useUser } from "@/context/users/userContext";

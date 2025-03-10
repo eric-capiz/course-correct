@@ -1,5 +1,3 @@
-"use client";
-
 import { Box, Typography, Container, CircularProgress } from "@mui/material";
 import { useAuth } from "@/context/auth/authContext";
 

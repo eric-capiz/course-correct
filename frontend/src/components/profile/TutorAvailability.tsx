@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Typography, Box, Card, CardContent, Button } from "@mui/material";
 import TutorCalendar from "@/components/calendar/TutorCalendar";

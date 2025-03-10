@@ -1,5 +1,3 @@
-"use client";
-
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import {
   AccountCircle,

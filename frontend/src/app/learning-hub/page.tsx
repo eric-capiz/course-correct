@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 import { Container, Typography, Box, Tab, Tabs } from "@mui/material";
 import { useAuth } from "@/context/auth/authContext";

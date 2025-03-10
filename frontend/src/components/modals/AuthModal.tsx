@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, KeyboardEvent } from "react";
 import {
   Modal,
