@@ -10,11 +10,20 @@ require("dotenv").config();
 
 const app = express();
 
-app.use((req, res, next) => {
-  next();
-});
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://course-correct-ec.vercel.app",
+      "https://course-correct-git-main-ericcapiz.vercel.app",
+      "https://course-correct-ericcapiz.vercel.app",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
