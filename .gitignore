@@ -86,6 +86,7 @@ web_modules/
 # Next.js build output
 .next
 out
+src/app/layout.tsx
 
 # Server-side (Backend) build output and runtime files
 /backend/node_modules
