@@ -22,7 +22,7 @@ import {
   PersonAdd,
   Hub,
 } from "@mui/icons-material";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/context/auth/authContext";
 
 const Navbar = () => {
@@ -56,7 +56,7 @@ const Navbar = () => {
         }}
         aria-label="Go to Learning Hub"
         component={Link}
-        href="/learning-hub"
+        to="/learning-hub"
       >
         Learning Hub
       </Button>
@@ -103,7 +103,7 @@ const Navbar = () => {
             }}
           >
             <Link
-              href="/"
+              to="/"
               style={{ textDecoration: "none", color: "inherit" }}
               aria-label="Go to home page"
             >
@@ -130,7 +130,7 @@ const Navbar = () => {
                   }}
                   aria-label="Go to profile"
                   component={Link}
-                  href="/profile"
+                  to="/profile"
                 >
                   {user.username} Profile
                 </Button>
@@ -212,7 +212,7 @@ const Navbar = () => {
             }}
           >
             <Link
-              href="/"
+              to="/"
               style={{ textDecoration: "none", color: "inherit" }}
               aria-label="Go to home page"
             >
@@ -248,7 +248,7 @@ const Navbar = () => {
                   <ListItem disablePadding>
                     <ListItemButton
                       component={Link}
-                      href="/learning-hub"
+                      to="/learning-hub"
                       onClick={() => setMenuOpen(false)}
                       aria-label="Go to Learning Hub"
                     >
@@ -262,7 +262,7 @@ const Navbar = () => {
                 <ListItem disablePadding>
                   <ListItemButton
                     component={Link}
-                    href="/profile"
+                    to="/profile"
                     onClick={() => setMenuOpen(false)}
                     aria-label="Go to profile page"
                   >
