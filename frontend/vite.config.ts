@@ -16,6 +16,12 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, "index.html"),
       },
+      onwarn(warning, warn) {
+        // Skip certain warnings
+        if (warning.code === "MODULE_NOT_FOUND") return;
+        // Use default for everything else
+        warn(warning);
+      },
     },
   },
 });
