@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Container, Typography, Box, Tab, Tabs } from "@mui/material";
 import { useAuth } from "@/context/auth/authContext";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import StudyGroupForm from "@/components/learningHub/StudyGroupForms";
 import StudyGroupCarousel from "@/components/profile/StudyGroupCarousel";
 import TutorAvailabilityCards from "@/components/learningHub/TutorAvailbilityCards";
@@ -10,7 +10,7 @@ import { useState } from "react";
 
 const LearningHub = () => {
   const { user, loading: authLoading } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
   const { studyGroups, getAllStudyGroups, joinStudyGroup } = useStudyGroup();
   const [activeTab, setActiveTab] = useState(0);
 
@@ -18,14 +18,14 @@ const LearningHub = () => {
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
-        router.push("/");
+        navigate("/");
       } else if (user.role !== "student") {
-        router.push("/profile");
+        navigate("/profile");
       } else {
         getAllStudyGroups();
       }
     }
-  }, [user, authLoading, router, getAllStudyGroups]);
+  }, [user, authLoading, navigate, getAllStudyGroups]);
 
   // Filter available study groups
   const availableStudyGroups = studyGroups.filter(

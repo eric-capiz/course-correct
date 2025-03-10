@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/auth/authContext";
 import { useUser } from "@/context/users/userContext";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useBooking } from "@/context/booking/bookingContext";
 import { useStudyGroup } from "@/context/studyGroup/studyGroupContext";
 import EditProfileDialog from "@/components/modals/EditProfile";
@@ -18,7 +18,7 @@ const Profile = () => {
   const { bookings, updateSession } = useBooking();
   const { studyGroups, getAllStudyGroups, leaveStudyGroup, deleteStudyGroup } =
     useStudyGroup();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
   // Memoize the fetch operations
@@ -36,11 +36,11 @@ const Profile = () => {
   // Auth check and data fetching
   useEffect(() => {
     if (!authLoading && authUser === null) {
-      router.push("/");
+      navigate("/");
     } else if (authUser?._id) {
       fetchData(authUser._id);
     }
-  }, [authUser, authLoading, router, fetchData]);
+  }, [authUser, authLoading, navigate, fetchData]);
 
   // Memoize user's study groups
   const userStudyGroups = useMemo(() => {
