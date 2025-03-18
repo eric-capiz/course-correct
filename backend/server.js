@@ -13,7 +13,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
+      "http://localhost:5173",
       "https://course-correct-gx4f.vercel.app",
       "https://course-correct-gx4f-git-main-eric-capizs-projects.vercel.app",
       "https://course-correct-gx4f-2gpouk1uq-eric-capizs-projects.vercel.app",
