@@ -5,7 +5,7 @@ import {
   bookTutor,
   updateBooking,
 } from "@/services/booking/bookingService";
-import { useAuth } from "@/context/auth/ authContext";
+import { useAuth } from "@/context/auth/authContext";
 
 interface Booking {
   id: string;

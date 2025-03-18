@@ -11,7 +11,7 @@ import {
   Alert,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import { useAuth } from "@/context/auth/ authContext";
+import { useAuth } from "@/context/auth/authContext";
 
 const roles = ["student", "tutor"];
 const gradeLevels = [
