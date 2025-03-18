@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Container, Typography, Box, Tab, Tabs } from "@mui/material";
-import { useAuth } from "@/context/auth/ authContext";
+import { useAuth } from "@/context/auth/authContext";
 import { useNavigate } from "react-router-dom";
 import StudyGroupForm from "@/components/learningHub/StudyGroupForms";
 import StudyGroupCarousel from "@/components/profile/StudyGroupCarousel";
