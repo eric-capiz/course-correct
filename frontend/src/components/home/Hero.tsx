@@ -1,5 +1,5 @@
 import { Box, Typography, Container, CircularProgress } from "@mui/material";
-import { useAuth } from "@/context/auth/authContext";
+import { useAuth } from "@/context/auth/tempauthContext";
 
 const Hero = () => {
   const { loading } = useAuth();
