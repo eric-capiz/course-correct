@@ -23,7 +23,7 @@ import {
   Hub,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/context/auth/tempauthContext";
+import { useAuth } from "@/context/auth/ authContext";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);

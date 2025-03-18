@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AuthProvider from "@/context/auth/tempauthContext";
+import AuthProvider from "@/context/auth/ authContext";
 import UserProvider from "@/context/users/userContext";
 import BookingProvider from "@/context/booking/bookingContext";
 import StudyGroupProvider from "@/context/studyGroup/studyGroupContext";
