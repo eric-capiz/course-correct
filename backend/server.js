@@ -14,9 +14,9 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://course-correct-gx4f.vercel.app",
-      "https://course-correct-gx4f-git-main-eric-capizs-projects.vercel.app",
-      "https://course-correct-gx4f-2gpouk1uq-eric-capizs-projects.vercel.app",
+      "https://course-correct-red.vercel.app",
+      "https://course-correct-git-main-eric-capizs-projects.vercel.app",
+      "https://course-correct-iqgzt2vbq-eric-capizs-projects.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
