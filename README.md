@@ -101,4 +101,4 @@ Course Correct is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) app
 
 ## License
 
-[License information to be added]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
