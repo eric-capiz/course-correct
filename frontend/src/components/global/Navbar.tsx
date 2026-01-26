@@ -13,7 +13,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  CircularProgress,
 } from "@mui/material";
 import {
   AccountCircle,
@@ -63,19 +62,6 @@ const Navbar = () => {
     );
   };
 
-  if (loading) {
-    return (
-      <CircularProgress
-        sx={{
-          color: "var(--primary-color)",
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-        }}
-      />
-    );
-  }
-
   return (
     <>
       <AppBar
@@ -112,7 +98,11 @@ const Navbar = () => {
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            {user ? (
+            {loading ? (
+              <Typography variant="body2" color="text.secondary">
+                Loading...
+              </Typography>
+            ) : user ? (
               <>
                 {renderLearningHubButton(user)}
                 <Button
@@ -242,7 +232,11 @@ const Navbar = () => {
           onKeyDown={(e) => e.key === "Escape" && setMenuOpen(false)}
         >
           <List>
-            {user ? (
+            {loading ? (
+              <ListItem>
+                <ListItemText primary="Loading..." />
+              </ListItem>
+            ) : user ? (
               <>
                 {user.role === "student" && (
                   <ListItem disablePadding>

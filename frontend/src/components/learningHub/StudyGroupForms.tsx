@@ -26,17 +26,17 @@ const StudyGroupForm = () => {
   });
 
   const handleDateTimeChange = (date: Date | null) => {
-    if (date) {
+    if (date && !isNaN(date.getTime())) {
       setSelectedDateTime(date);
-      setFormData({
-        ...formData,
+      setFormData((prev) => ({
+        ...prev,
         date: date.toISOString().split("T")[0],
         time: date.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
           hour12: true,
         }),
-      });
+      }));
     }
   };
 
@@ -134,6 +134,7 @@ const StudyGroupForm = () => {
             <DateTimePicker
               selectedDateTime={selectedDateTime}
               onDateTimeChange={handleDateTimeChange}
+              selectedDate={selectedDateTime ?? new Date()}
             />
           </Box>
 

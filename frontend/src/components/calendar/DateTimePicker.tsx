@@ -1,5 +1,10 @@
 import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
 interface DateTimePickerProps {
   selectedDateTime: Date | null;
   onDateTimeChange: (date: Date | null) => void;
@@ -12,8 +17,12 @@ const DateTimePicker = ({
   selectedDate,
 }: DateTimePickerProps) => {
   const currentDate = selectedDate || new Date();
-  const month = currentDate.toLocaleString("default", { month: "long" });
+  const monthIndex = currentDate.getMonth();
+  const month = MONTHS[monthIndex];
   const day = currentDate.getDate();
+  const year = currentDate.getFullYear();
+  const lastDayOfMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const daysInMonth = Array.from({ length: lastDayOfMonth }, (_, i) => i + 1);
 
   const generateTimeSlots = () => {
     const times = [];
@@ -39,18 +48,51 @@ const DateTimePicker = ({
     const [time, period] = timeString.split(" ");
     const [hours, minutes] = time.split(":");
 
-    const newDate = new Date(selectedDate);
-    let hour = parseInt(hours);
+    const baseDate = new Date(currentDate.getTime());
+    let hour = parseInt(hours, 10);
 
-    // Convert to 24-hour format
     if (period === "PM" && hour !== 12) {
       hour += 12;
     } else if (period === "AM" && hour === 12) {
       hour = 0;
     }
 
-    newDate.setHours(hour, parseInt(minutes), 0, 0);
-    onDateTimeChange(newDate);
+    baseDate.setHours(hour, parseInt(minutes, 10), 0, 0);
+    onDateTimeChange(baseDate);
+  };
+
+  const handleMonthChange = (newMonthIndex: number) => {
+    if (newMonthIndex < 0 || newMonthIndex > 11 || isNaN(newMonthIndex)) return;
+    const lastDay = new Date(year, newMonthIndex + 1, 0).getDate();
+    const safeDay = Math.min(day, lastDay);
+    const newDate = new Date(
+      year,
+      newMonthIndex,
+      safeDay,
+      currentDate.getHours(),
+      currentDate.getMinutes(),
+      0,
+      0
+    );
+    if (!isNaN(newDate.getTime())) {
+      onDateTimeChange(newDate);
+    }
+  };
+
+  const handleDayChange = (newDay: number) => {
+    if (isNaN(newDay) || newDay < 1 || newDay > lastDayOfMonth) return;
+    const newDate = new Date(
+      year,
+      monthIndex,
+      newDay,
+      currentDate.getHours(),
+      currentDate.getMinutes(),
+      0,
+      0
+    );
+    if (!isNaN(newDate.getTime())) {
+      onDateTimeChange(newDate);
+    }
   };
 
   return (
@@ -67,12 +109,14 @@ const DateTimePicker = ({
       <FormControl>
         <InputLabel>Month</InputLabel>
         <Select
-          value={month}
+          value={monthIndex}
           label="Month"
-          disabled
+          onChange={(e) => handleMonthChange(Number(e.target.value))}
           sx={{ minWidth: { xs: "100%", sm: 120 } }}
         >
-          <MenuItem value={month}>{month}</MenuItem>
+          {MONTHS.map((m, i) => (
+            <MenuItem key={m} value={i}>{m}</MenuItem>
+          ))}
         </Select>
       </FormControl>
 
@@ -81,10 +125,12 @@ const DateTimePicker = ({
         <Select
           value={day}
           label="Day"
-          disabled
+          onChange={(e) => handleDayChange(Number(e.target.value))}
           sx={{ minWidth: { xs: "100%", sm: 80 } }}
         >
-          <MenuItem value={day}>{day}</MenuItem>
+          {daysInMonth.map((d) => (
+            <MenuItem key={d} value={d}>{d}</MenuItem>
+          ))}
         </Select>
       </FormControl>
 

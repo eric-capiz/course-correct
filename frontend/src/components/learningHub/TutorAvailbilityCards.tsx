@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Alert,
 } from "@mui/material";
 import { useTutorAvailability } from "@/context/tutorAvailability/tutorAvailabilityContext";
 import { bookTutor } from "@/services/booking/bookingService";
@@ -32,8 +33,19 @@ interface AvailabilitySlot {
 
 const ITEMS_PER_PAGE = 9;
 
+/** Parse "YYYY-MM-DD" as local date so it doesn't shift to previous day in western timezones */
+function formatDayLocal(dayStr: string, options?: Intl.DateTimeFormatOptions): string {
+  const parts = dayStr.split("-").map(Number);
+  if (parts.length !== 3 || parts.some(isNaN)) {
+    return new Date(dayStr).toLocaleDateString("en-US", options);
+  }
+  const [y, m, d] = parts;
+  const local = new Date(y, m - 1, d);
+  return local.toLocaleDateString("en-US", options ?? { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+}
+
 const TutorAvailabilityCards = () => {
-  const { availability, loading, getAllTutorsAvailability } =
+  const { availability, loading, error, getAllTutorsAvailability } =
     useTutorAvailability();
   const { fetchBookings } = useBooking();
   const [page, setPage] = useState(1);
@@ -59,11 +71,17 @@ const TutorAvailabilityCards = () => {
       ?.setAttribute("aria-label", announcement);
   };
 
-  // Calculate pagination
+  // Newest to oldest by date, then by start time within same day
+  const sortedAvailability = [...availability].sort((a, b) => {
+    const byDay = b.day.localeCompare(a.day);
+    if (byDay !== 0) return byDay;
+    return new Date(b.startTime).getTime() - new Date(a.startTime).getTime();
+  });
+
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentSlots = availability.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(availability.length / ITEMS_PER_PAGE);
+  const currentSlots = sortedAvailability.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(sortedAvailability.length / ITEMS_PER_PAGE);
 
   const handleBookClick = (slot: AvailabilitySlot) => {
     setSelectedSlot(slot);
@@ -109,6 +127,19 @@ const TutorAvailabilityCards = () => {
 
   return (
     <Box component="section" aria-label="Available Tutor Sessions">
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      {!error && availability.length === 0 && (
+        <Typography color="text.secondary" sx={{ py: 4 }}>
+          No tutor sessions available right now. Check back later or ask a tutor
+          to add availability.
+        </Typography>
+      )}
+      {!error && availability.length > 0 && (
+        <>
       <div
         id="page-change-announcement"
         aria-live="polite"
@@ -156,12 +187,7 @@ const TutorAvailabilityCards = () => {
                   sx={{ mb: 1 }}
                 >
                   <span aria-label="Session date">
-                    {new Date(slot.day).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
+                    {formatDayLocal(slot.day)}
                   </span>
                 </Typography>
                 <Typography
@@ -222,6 +248,8 @@ const TutorAvailabilityCards = () => {
           />
         </Box>
       )}
+        </>
+      )}
 
       <Dialog
         open={isBookingDialogOpen}
@@ -242,7 +270,7 @@ const TutorAvailabilityCards = () => {
                 Grade Level: {selectedSlot.tutor.gradeLevel}
               </Typography>
               <Typography gutterBottom>
-                Date: {new Date(selectedSlot.day).toLocaleDateString()}
+                Date: {formatDayLocal(selectedSlot.day, { month: "numeric", day: "numeric", year: "numeric" })}
               </Typography>
               <Typography>
                 Time: {new Date(selectedSlot.startTime).toLocaleTimeString()} -{" "}

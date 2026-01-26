@@ -86,9 +86,14 @@ export const TutorAvailabilityProvider = ({
     setError(null);
     try {
       const data = await getAllTutorsAvailabilityService();
-      setAvailability(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setAvailability(Array.isArray(data) ? data : []);
+    } catch (err: unknown) {
+      setAvailability([]);
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ||
+        (err instanceof Error ? err.message : "An error occurred");
+      setError(message);
       throw err;
     } finally {
       setLoading(false);

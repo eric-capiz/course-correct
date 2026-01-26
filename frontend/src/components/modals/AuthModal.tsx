@@ -97,8 +97,13 @@ const AuthModal = ({
         });
       }
       onClose();
-    } catch (err) {
-      setError(err.message || "An error occurred. Please try again.");
+    } catch (err: unknown) {
+      const ax = err as { response?: { data?: { message?: string } }; message?: string };
+      const apiMessage = ax.response?.data?.message;
+      const fallback = isLogin
+        ? "Invalid email or password. Please check your credentials and try again."
+        : "Something went wrong. Please check your details and try again.";
+      setError(apiMessage || fallback);
     } finally {
       setLoading(false);
     }
