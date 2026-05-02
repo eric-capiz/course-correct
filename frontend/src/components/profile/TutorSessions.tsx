@@ -7,12 +7,12 @@ import {
   Tab,
   Button,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useState } from "react";
 
 const TutorSessions = ({ user, bookings, updateSession }) => {
   const [tab, setTab] = useState(0);
 
-  // Filter bookings by status
   const pendingBookings = bookings.filter(
     (b) => b.extendedProps.status === "pending"
   );
@@ -23,49 +23,55 @@ const TutorSessions = ({ user, bookings, updateSession }) => {
     ["completed", "cancelled"].includes(b.extendedProps.status)
   );
 
+  const tabsSx = {
+    mb: 2,
+    minHeight: 52,
+    px: 0.75,
+    py: 0.5,
+    borderRadius: 3,
+    bgcolor: (t) => alpha(t.palette.background.paper, 0.65),
+    border: (t) => `1px solid ${alpha(t.palette.primary.main, 0.15)}`,
+    "& .MuiTabs-indicator": {
+      display: "none",
+    },
+    "& .MuiTab-root": {
+      flex: 1,
+      textTransform: "none",
+      fontSize: "0.875rem",
+      fontWeight: 700,
+      borderRadius: 2,
+      minHeight: 44,
+      color: "text.secondary",
+      transition: "all 0.2s ease",
+      "&.Mui-selected": {
+        color: "primary.light",
+        bgcolor: (t) => alpha(t.palette.primary.main, 0.18),
+        boxShadow: (t) => `0 0 24px ${alpha(t.palette.primary.main, 0.25)}`,
+      },
+    },
+  };
+
   return (
     <>
-      <Typography variant="h5" fontWeight={700} mb={2} id="tutor-sessions">
+      <Typography variant="h5" fontWeight={800} mb={2} id="tutor-sessions">
         Tutor Sessions ({bookings?.length || 0})
       </Typography>
       <Tabs
         value={tab}
-        onChange={(e, newValue) => setTab(newValue)}
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "8px",
-          padding: "4px",
-          "& .MuiTab-root": {
-            flex: 1,
-            textTransform: "none",
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#555",
-            padding: "10px",
-            "&.Mui-selected": {
-              backgroundColor: "#1976d2",
-              color: "#fff",
-              borderRadius: "6px",
-            },
-          },
-          "& .MuiTabs-indicator": {
-            display: "none",
-          },
-        }}
+        onChange={(_e, newValue) => setTab(newValue)}
+        sx={tabsSx}
         aria-label="Tutor Sessions Navigation"
       >
-        <Tab label={`Pending (${pendingBookings.length})`} tabIndex={0} />
-        <Tab label={`Upcoming (${upcomingBookings.length})`} tabIndex={0} />
-        <Tab label={`Past (${pastBookings.length})`} tabIndex={0} />
+        <Tab label={`Pending (${pendingBookings.length})`} />
+        <Tab label={`Upcoming (${upcomingBookings.length})`} />
+        <Tab label={`Past (${pastBookings.length})`} />
       </Tabs>
 
       <Card sx={{ mt: 2 }}>
         <CardContent>
           {[pendingBookings, upcomingBookings, pastBookings][tab]?.length ===
           0 ? (
-            <Typography>No sessions available.</Typography>
+            <Typography color="text.secondary">No sessions available.</Typography>
           ) : (
             <Box sx={{ display: "grid", gap: 2 }}>
               {[pendingBookings, upcomingBookings, pastBookings][tab].map(
@@ -75,33 +81,42 @@ const TutorSessions = ({ user, bookings, updateSession }) => {
                     sx={{
                       p: 2,
                       borderLeft: "5px solid",
-                      borderColor: "#1976d2",
+                      borderColor: "primary.main",
                     }}
                     tabIndex={0}
                     role="article"
                     aria-labelledby={`booking-${booking.id}`}
                   >
-                    <CardContent>
-                      <Typography variant="h6" id={`booking-${booking.id}`}>
+                    <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+                      <Typography variant="h6" id={`booking-${booking.id}`} fontWeight={800}>
                         {booking.title}
                       </Typography>
-                      <Typography>
-                        <b>{user?.role === "student" ? "Tutor" : "Student"}:</b>{" "}
+                      <Typography variant="body2" sx={{ mt: 1 }}>
+                        <Box component="span" fontWeight={700}>
+                          {user?.role === "student" ? "Tutor" : "Student"}:
+                        </Box>{" "}
                         {booking.extendedProps.tutor ||
                           booking.extendedProps.student}
                       </Typography>
-                      <Typography>
-                        <b>Start Time:</b>{" "}
+                      <Typography variant="body2">
+                        <Box component="span" fontWeight={700}>
+                          Start Time:
+                        </Box>{" "}
                         {new Date(booking.start).toLocaleString()}
                       </Typography>
-                      <Typography>
-                        <b>Duration:</b>{" "}
+                      <Typography variant="body2">
+                        <Box component="span" fontWeight={700}>
+                          Duration:
+                        </Box>{" "}
                         {booking.extendedProps.duration || "N/A"} mins
                       </Typography>
-                      <Typography>
-                        <b>Status:</b> {booking.extendedProps.status}
+                      <Typography variant="body2">
+                        <Box component="span" fontWeight={700}>
+                          Status:
+                        </Box>{" "}
+                        {booking.extendedProps.status}
                       </Typography>
-                      <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+                      <Box sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}>
                         {user?.role === "tutor" && (
                           <>
                             {booking.extendedProps.status === "pending" && (

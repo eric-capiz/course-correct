@@ -164,8 +164,11 @@ const TutorAvailabilityCards = () => {
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
+                transition: "transform 0.25s ease, box-shadow 0.25s ease",
                 "&:hover": {
-                  boxShadow: 6,
+                  transform: "translateY(-4px)",
+                  boxShadow: (t) =>
+                    `0 24px 60px rgba(0,0,0,0.45), 0 0 48px ${t.palette.primary.main}22`,
                 },
               }}
             >
@@ -211,19 +214,10 @@ const TutorAvailabilityCards = () => {
                 </Typography>
                 <Button
                   variant="contained"
+                  color="primary"
                   fullWidth
                   onClick={() => handleBookClick(slot)}
                   aria-label={`Book session with ${slot.tutor.name} for ${slot.subject}`}
-                  sx={{
-                    backgroundColor: "var(--primary-color)",
-                    "&:hover": {
-                      backgroundColor: "var(--button-primary-hover)",
-                    },
-                    "&:focus-visible": {
-                      outline: "2px solid var(--primary-color)",
-                      outlineOffset: "2px",
-                    },
-                  }}
                 >
                   Book Session
                 </Button>
@@ -290,12 +284,7 @@ const TutorAvailabilityCards = () => {
             onClick={handleConfirmBooking}
             disabled={isBooking}
             variant="contained"
-            sx={{
-              backgroundColor: "var(--primary-color)",
-              "&:hover": {
-                backgroundColor: "var(--button-primary-hover)",
-              },
-            }}
+            color="primary"
           >
             {isBooking ? "Booking..." : "Confirm Booking"}
           </Button>

@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { Box } from "@mui/material";
 import AuthProvider from "@/context/auth/authContext";
 import UserProvider from "@/context/users/userContext";
 import BookingProvider from "@/context/booking/bookingContext";
@@ -17,23 +18,24 @@ function App() {
         <BookingProvider>
           <StudyGroupProvider>
             <TutorAvailabilityProvider>
-              <div
-                style={{
+              <Box
+                sx={{
                   display: "flex",
                   flexDirection: "column",
                   minHeight: "100vh",
+                  bgcolor: "background.default",
                 }}
               >
                 <Navbar />
-                <main style={{ flex: "1" }}>
+                <Box component="main" className="app-main-canvas" sx={{ flex: 1 }}>
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/learning-hub" element={<LearningHub />} />
                   </Routes>
-                </main>
+                </Box>
                 <Footer />
-              </div>
+              </Box>
             </TutorAvailabilityProvider>
           </StudyGroupProvider>
         </BookingProvider>

@@ -66,13 +66,8 @@ const TutorAvailability = ({ user }: TutorAvailabilityProps) => {
                 >
                   <Button
                     variant="contained"
+                    color="primary"
                     onClick={() => setShowAddForm(true)}
-                    sx={{
-                      backgroundColor: "var(--primary-color)",
-                      "&:hover": {
-                        backgroundColor: "var(--button-primary-hover)",
-                      },
-                    }}
                   >
                     Add Slot
                   </Button>

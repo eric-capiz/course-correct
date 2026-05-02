@@ -100,7 +100,8 @@ const StudyGroupCarousel = ({
                     width: { xs: "100%", sm: getCardWidth() },
                     height: getCardHeight(),
                     p: { xs: 2, sm: 3 },
-                    borderLeft: "4px solid var(--primary-color)",
+                    borderLeft: "4px solid",
+                    borderColor: "primary.main",
                     display: "flex",
                     flexDirection: "column",
                   }}
@@ -126,6 +127,7 @@ const StudyGroupCarousel = ({
               }}
             >
               <IconButton
+                color="primary"
                 onClick={() => scrollCarousel("left")}
                 aria-label="Previous study group"
                 sx={{ display: { xs: "none", sm: "flex" } }}
@@ -184,7 +186,8 @@ const StudyGroupCarousel = ({
                         visibility:
                           Math.abs(position) <= 1 ? "visible" : "hidden",
                         p: { xs: 1.5, sm: 3 },
-                        borderLeft: "4px solid var(--primary-color)",
+                        borderLeft: "4px solid",
+                        borderColor: "primary.main",
                         display: "flex",
                         flexDirection: "column",
                         zIndex: position === 0 ? 2 : 1,
@@ -203,6 +206,7 @@ const StudyGroupCarousel = ({
               </Box>
 
               <IconButton
+                color="primary"
                 onClick={() => scrollCarousel("right")}
                 aria-label="Next study group"
                 sx={{ display: { xs: "none", sm: "flex" } }}
@@ -231,8 +235,10 @@ const StudyGroupCarousel = ({
                     width: 8,
                     height: 8,
                     borderRadius: "50%",
-                    backgroundColor:
-                      currentCardIndex === index ? "primary.main" : "grey.300",
+                    bgcolor:
+                      currentCardIndex === index
+                        ? "primary.main"
+                        : "action.disabledBackground",
                     cursor: "pointer",
                   }}
                 />

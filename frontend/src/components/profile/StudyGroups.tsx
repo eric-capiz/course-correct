@@ -6,6 +6,7 @@ import {
   Button,
   Chip,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 
 const StudyGroups = ({
   user,
@@ -30,12 +31,14 @@ const StudyGroups = ({
                   key={group._id}
                   sx={{
                     p: { xs: 2, sm: 3 },
-                    borderLeft: "4px solid var(--primary-color)",
+                    borderLeft: "4px solid",
+                    borderColor: "primary.main",
                     "&:hover": {
-                      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                      transform: "translateY(-2px)",
+                      boxShadow: (t) =>
+                        `0 12px 40px ${alpha("#000", 0.35)}, 0 0 40px ${alpha(t.palette.primary.main, 0.15)}`,
+                      transform: "translateY(-3px)",
                     },
-                    transition: "all 0.2s ease-in-out",
+                    transition: "all 0.25s ease",
                   }}
                   role="article"
                   aria-labelledby={`group-title-${group._id}`}
@@ -120,10 +123,14 @@ const StudyGroups = ({
                           size="small"
                           variant="outlined"
                           sx={{
-                            borderRadius: "4px",
-                            backgroundColor:
+                            borderRadius: 1,
+                            borderColor: (t) =>
                               participant._id === group.creator._id
-                                ? "rgba(25, 118, 210, 0.08)"
+                                ? alpha(t.palette.primary.main, 0.45)
+                                : alpha(t.palette.divider, 1),
+                            backgroundColor: (t) =>
+                              participant._id === group.creator._id
+                                ? alpha(t.palette.primary.main, 0.12)
                                 : "transparent",
                           }}
                         />

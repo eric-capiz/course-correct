@@ -1,23 +1,38 @@
 :root {
-  /* Primary Theme Colors */
-  --primary-color: #1e3a8a; /* Midnight Blue */
-  --secondary-color: #475569; /* Slate Gray */
-  --accent-color: #facc15; /* Warm Yellow */
+  /* Aligned with src/theme/tokens + muiTheme */
+  --cc-bloom: #22d3ee;
+  --cc-violet: #a78bfa;
+  --cc-rose: #fb7185;
+  --cc-gold: #fbbf24;
+  --cc-mint: #34d399;
+  --cc-void: #030012;
+  --cc-void-deep: #010008;
+  --cc-elevated: #0c0824;
+  --cc-chrome: #f8fafc;
+  --cc-muted: #94a3b8;
+  --cc-line: rgba(255, 255, 255, 0.08);
+  --cc-glass: rgba(255, 255, 255, 0.06);
 
-  /* Background & Text */
-  --background-color: #f8fafc;
-  --background-light: #ffffff;
-  --text-color: #1e293b;
+  /* Legacy var names used across components */
+  --primary-color: var(--cc-bloom);
+  --secondary-color: var(--cc-muted);
+  --accent-color: var(--cc-gold);
+  --background-color: var(--cc-void-deep);
+  --background-light: var(--cc-elevated);
+  --text-color: var(--cc-chrome);
+  --text-light: var(--cc-chrome);
+  --text-muted: var(--cc-muted);
+  --button-primary-bg: var(--cc-bloom);
+  --button-primary-hover: #06b6d4;
+  --button-secondary-bg: var(--cc-violet);
+  --button-secondary-hover: #7c3aed;
 
-  /* Button Colors */
-  --button-primary-bg: var(--primary-color);
-  --button-primary-hover: #172554;
-  --button-secondary-bg: var(--secondary-color);
-  --button-secondary-hover: #334155;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-heading: "Inter", "Segoe UI", system-ui, sans-serif;
+}
 
-  /* Typography */
-  --font-body: "Inter", Arial, sans-serif;
-  --font-heading: "Poppins", sans-serif;
+html {
+  color-scheme: dark;
 }
 
 html,
@@ -25,17 +40,50 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   color: var(--text-color);
-  background: var(--background-color);
+  background: var(--cc-void-deep);
   font-family: var(--font-body);
-  padding: 20px;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle page canvas (non-home routes use via .app-main-canvas) */
+.app-main-canvas {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.app-main-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 100% 60% at 50% 0%,
+    rgba(34, 211, 238, 0.07) 0%,
+    transparent 55%
+  );
+}
+
+.app-main-canvas > * {
+  position: relative;
+  z-index: 1;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 a {
@@ -44,5 +92,15 @@ a {
 }
 
 button {
-  transition: all 0.3s ease;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  button {
+    transition: none;
+  }
 }

@@ -82,7 +82,7 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
           mb: 2,
         }}
       >
-        <IconButton onClick={handlePreviousMonth} aria-label="Previous month">
+        <IconButton onClick={handlePreviousMonth} aria-label="Previous month" color="primary">
           <ChevronLeftIcon />
         </IconButton>
         <Typography variant="h6" component="h2" id="current-month">
@@ -91,7 +91,7 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
             year: "numeric",
           })}
         </Typography>
-        <IconButton onClick={handleNextMonth} aria-label="Next month">
+        <IconButton onClick={handleNextMonth} aria-label="Next month" color="primary">
           <ChevronRightIcon />
         </IconButton>
       </Box>
@@ -159,18 +159,20 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
                   color: isPastOrToday
                     ? "text.disabled"
                     : isSelected
-                    ? "common.white"
-                    : "text.primary",
-                  "&:hover": !isPastOrToday && {
-                    backgroundColor: isSelected
-                      ? "primary.dark"
-                      : "action.hover",
-                  },
-                  "&:focus-visible": !isPastOrToday && {
-                    outline: "2px solid",
-                    outlineColor: "primary.main",
-                    outlineOffset: "2px",
-                  },
+                      ? "primary.contrastText"
+                      : "text.primary",
+                  ...(!isPastOrToday
+                    ? {
+                        "&:hover": {
+                          backgroundColor: isSelected ? "primary.dark" : "action.hover",
+                        },
+                        "&:focus-visible": {
+                          outline: "2px solid",
+                          outlineColor: "primary.main",
+                          outlineOffset: "2px",
+                        },
+                      }
+                    : {}),
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",

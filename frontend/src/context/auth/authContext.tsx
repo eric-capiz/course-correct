@@ -7,7 +7,7 @@ import {
 } from "react";
 import { authService } from "../../services/auth/authService";
 
-interface User {
+export interface User {
   _id: string;
   name: string;
   username: string;
