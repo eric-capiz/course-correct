@@ -14,6 +14,11 @@ import {
 import { Close, Visibility, VisibilityOff } from "@mui/icons-material";
 import { alpha } from "@mui/material/styles";
 import { useAuth } from "@/context/auth/authContext";
+import {
+  ivyParchmentHelperTextSx,
+  ivyParchmentIconButtonSx,
+  ivyParchmentTextFieldSx,
+} from "@/components/profile/ivyProfileCards";
 
 const roles = ["student", "tutor"];
 const gradeLevels = [
@@ -145,13 +150,13 @@ const AuthModal = ({
       >
         <IconButton
           onClick={onClose}
-          sx={{ alignSelf: "flex-end", color: "text.secondary" }}
+          sx={{ alignSelf: "flex-end", ...ivyParchmentIconButtonSx }}
           aria-label="Close authentication modal"
         >
           <Close />
         </IconButton>
 
-        <Typography variant="h5" fontWeight={800} textAlign="center" color="text.primary">
+        <Typography variant="h5" fontWeight={600} textAlign="center" sx={{ color: "inherit" }}>
           {isLogin ? "Log In" : "Sign Up"}
         </Typography>
 
@@ -170,6 +175,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             />
             <TextField
               label="Username"
@@ -178,6 +184,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             />
           </>
         )}
@@ -190,6 +197,7 @@ const AuthModal = ({
           onChange={handleChange}
           fullWidth
           required
+          sx={ivyParchmentTextFieldSx}
         />
         <TextField
           label="Password"
@@ -199,6 +207,7 @@ const AuthModal = ({
           onChange={handleChange}
           fullWidth
           required
+          sx={ivyParchmentTextFieldSx}
           InputProps={{
             endAdornment: (
               <IconButton
@@ -222,6 +231,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             >
               {roles.map((role) => (
                 <MenuItem key={role} value={role}>
@@ -238,6 +248,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             >
               {gradeLevels.map((level) => (
                 <MenuItem key={level} value={level}>
@@ -253,6 +264,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             />
           </>
         )}
@@ -275,9 +287,14 @@ const AuthModal = ({
           )}
         </Button>
 
-        <Typography variant="body2" textAlign="center" color="text.secondary">
+        <Typography variant="body2" textAlign="center" sx={ivyParchmentHelperTextSx}>
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-          <Button variant="text" color="primary" onClick={toggleAuthMode} sx={{ fontWeight: 700 }}>
+          <Button
+            variant="text"
+            color="primary"
+            onClick={toggleAuthMode}
+            sx={{ fontWeight: 700, verticalAlign: "baseline", p: 0, minWidth: 0 }}
+          >
             {isLogin ? "Sign Up Here" : "Log In Here"}
           </Button>
         </Typography>

@@ -22,8 +22,8 @@ const Footer = () => {
         py: 3,
         px: 4,
         mt: "auto",
-        borderTop: (t) => `1px solid ${alpha(t.palette.divider, 1)}`,
-        bgcolor: (t) => alpha(t.palette.background.paper, 0.5),
+        borderTop: (t) => `1px solid ${alpha(t.palette.primary.main, 0.28)}`,
+        bgcolor: (t) => alpha(t.palette.secondary.main, 0.55),
         backdropFilter: "blur(16px)",
         color: "text.secondary",
       }}
@@ -42,7 +42,7 @@ const Footer = () => {
             fontWeight: 700,
             color: "primary.light",
             textDecoration: "none",
-            "&:hover": { color: "primary.main" },
+            "&:hover": { color: "primary.light", textDecoration: "underline" },
           }}
           aria-label="Visit Eric Capiz's portfolio in a new tab"
         >
@@ -55,7 +55,7 @@ const Footer = () => {
         sx={{
           fontStyle: "italic",
           background: (t) =>
-            `linear-gradient(90deg, ${t.palette.text.secondary}, ${t.palette.primary.light})`,
+            `linear-gradient(90deg, ${alpha(t.palette.text.secondary, 1)} 0%, ${t.palette.primary.main} 45%, ${t.palette.primary.light} 100%)`,
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           backgroundClip: "text",

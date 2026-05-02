@@ -9,6 +9,11 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useState } from "react";
+import {
+  ivyEmptyStateSx,
+  ivyFieldLabelSx,
+  ivyNestedCardSx,
+} from "@/components/profile/ivyProfileCards";
 
 const TutorSessions = ({ user, bookings, updateSession }) => {
   const [tab, setTab] = useState(0);
@@ -29,8 +34,8 @@ const TutorSessions = ({ user, bookings, updateSession }) => {
     px: 0.75,
     py: 0.5,
     borderRadius: 3,
-    bgcolor: (t) => alpha(t.palette.background.paper, 0.65),
-    border: (t) => `1px solid ${alpha(t.palette.primary.main, 0.15)}`,
+    bgcolor: (t) => alpha(t.palette.secondary.main, 0.45),
+    border: (t) => `1px solid ${alpha(t.palette.primary.main, 0.28)}`,
     "& .MuiTabs-indicator": {
       display: "none",
     },
@@ -39,21 +44,28 @@ const TutorSessions = ({ user, bookings, updateSession }) => {
       textTransform: "none",
       fontSize: "0.875rem",
       fontWeight: 700,
+      fontFamily: '"Source Serif 4", Georgia, serif',
       borderRadius: 2,
       minHeight: 44,
       color: "text.secondary",
       transition: "all 0.2s ease",
       "&.Mui-selected": {
         color: "primary.light",
-        bgcolor: (t) => alpha(t.palette.primary.main, 0.18),
-        boxShadow: (t) => `0 0 24px ${alpha(t.palette.primary.main, 0.25)}`,
+        bgcolor: (t) => alpha(t.palette.primary.main, 0.2),
+        boxShadow: (t) => `0 0 20px ${alpha(t.palette.primary.main, 0.22)}`,
       },
     },
   };
 
   return (
     <>
-      <Typography variant="h5" fontWeight={800} mb={2} id="tutor-sessions">
+      <Typography
+        variant="h5"
+        fontWeight={700}
+        mb={2}
+        id="tutor-sessions"
+        sx={{ fontFamily: '"Cormorant Garamond", Georgia, serif', letterSpacing: "0.02em" }}
+      >
         Tutor Sessions ({bookings?.length || 0})
       </Typography>
       <Tabs
@@ -67,11 +79,18 @@ const TutorSessions = ({ user, bookings, updateSession }) => {
         <Tab label={`Past (${pastBookings.length})`} />
       </Tabs>
 
-      <Card sx={{ mt: 2 }}>
+      <Card
+        sx={{
+          mt: 2,
+          bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+          border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
+          boxShadow: `inset 0 1px 0 ${alpha("#fff", 0.55)}, 0 16px 48px ${alpha("#000", 0.12)}`,
+        }}
+      >
         <CardContent>
           {[pendingBookings, upcomingBookings, pastBookings][tab]?.length ===
           0 ? (
-            <Typography color="text.secondary">No sessions available.</Typography>
+            <Typography sx={ivyEmptyStateSx}>No sessions in this tab.</Typography>
           ) : (
             <Box sx={{ display: "grid", gap: 2 }}>
               {[pendingBookings, upcomingBookings, pastBookings][tab].map(
@@ -79,43 +98,66 @@ const TutorSessions = ({ user, bookings, updateSession }) => {
                   <Card
                     key={booking.id}
                     sx={{
-                      p: 2,
-                      borderLeft: "5px solid",
-                      borderColor: "primary.main",
+                      p: { xs: 2, sm: 2.5 },
+                      ...ivyNestedCardSx,
                     }}
                     tabIndex={0}
                     role="article"
                     aria-labelledby={`booking-${booking.id}`}
                   >
                     <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
-                      <Typography variant="h6" id={`booking-${booking.id}`} fontWeight={800}>
+                      <Typography
+                        variant="h6"
+                        id={`booking-${booking.id}`}
+                        sx={{
+                          fontWeight: 600,
+                          fontFamily: '"Cormorant Garamond", Georgia, serif',
+                          color: (theme) => theme.palette.primary.dark,
+                        }}
+                      >
                         {booking.title}
                       </Typography>
-                      <Typography variant="body2" sx={{ mt: 1 }}>
-                        <Box component="span" fontWeight={700}>
-                          {user?.role === "student" ? "Tutor" : "Student"}:
-                        </Box>{" "}
-                        {booking.extendedProps.tutor ||
-                          booking.extendedProps.student}
-                      </Typography>
-                      <Typography variant="body2">
-                        <Box component="span" fontWeight={700}>
-                          Start Time:
-                        </Box>{" "}
-                        {new Date(booking.start).toLocaleString()}
-                      </Typography>
-                      <Typography variant="body2">
-                        <Box component="span" fontWeight={700}>
-                          Duration:
-                        </Box>{" "}
-                        {booking.extendedProps.duration || "N/A"} mins
-                      </Typography>
-                      <Typography variant="body2">
-                        <Box component="span" fontWeight={700}>
-                          Status:
-                        </Box>{" "}
-                        {booking.extendedProps.status}
-                      </Typography>
+                      <Box sx={{ mt: 2, display: "grid", gap: 1.25 }}>
+                        <Box>
+                          <Typography component="span" sx={ivyFieldLabelSx}>
+                            {user?.role === "student" ? "Tutor" : "Student"}
+                          </Typography>
+                          <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.88) }}>
+                            {booking.extendedProps.tutor ||
+                              booking.extendedProps.student}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography component="span" sx={ivyFieldLabelSx}>
+                            Start time
+                          </Typography>
+                          <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.88) }}>
+                            {new Date(booking.start).toLocaleString()}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography component="span" sx={ivyFieldLabelSx}>
+                            Duration
+                          </Typography>
+                          <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.88) }}>
+                            {booking.extendedProps.duration || "N/A"} minutes
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography component="span" sx={ivyFieldLabelSx}>
+                            Status
+                          </Typography>
+                          <Typography
+                            sx={{
+                              fontWeight: 700,
+                              color: (theme) => alpha(theme.palette.common.black, 0.88),
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {booking.extendedProps.status}
+                          </Typography>
+                        </Box>
+                      </Box>
                       <Box sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}>
                         {user?.role === "tutor" && (
                           <>

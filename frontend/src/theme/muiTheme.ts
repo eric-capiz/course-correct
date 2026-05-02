@@ -1,67 +1,109 @@
 import { alpha, createTheme } from "@mui/material/styles";
-import { ccTokens, primaryHover } from "./tokens";
+import { ivyTokens as t, primaryHover } from "./tokens";
 
 export const courseCorrectTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: ccTokens.bloom,
-      light: "#67e8f9",
-      dark: "#0891b2",
-      contrastText: ccTokens.voidDeep,
+      main: t.gold,
+      light: t.goldBright,
+      dark: t.goldBurnished,
+      contrastText: t.midnight,
     },
     secondary: {
-      main: ccTokens.violet,
-      contrastText: ccTokens.chrome,
+      main: t.oxford,
+      light: "#2a5588",
+      dark: "#001428",
+      contrastText: t.ivory,
     },
     error: {
-      main: ccTokens.rose,
+      main: "#c45c6a",
     },
     warning: {
-      main: ccTokens.gold,
+      main: t.goldBright,
     },
     success: {
-      main: ccTokens.mint,
+      main: "#6b9b7a",
+    },
+    info: {
+      main: t.moonInk,
     },
     background: {
-      default: ccTokens.voidDeep,
-      paper: alpha(ccTokens.elevated, 0.92),
+      default: t.midnight,
+      paper: t.parchment,
     },
     text: {
-      primary: ccTokens.chrome,
-      secondary: ccTokens.muted,
-      disabled: alpha(ccTokens.chrome, 0.38),
+      primary: t.ivory,
+      secondary: t.verseMuted,
+      disabled: alpha(t.ivory, 0.38),
     },
-    divider: alpha("#ffffff", 0.1),
+    divider: alpha(t.gold, 0.22),
     action: {
-      hover: alpha(ccTokens.bloom, 0.08),
-      selected: alpha(ccTokens.bloom, 0.14),
-      disabled: alpha(ccTokens.chrome, 0.28),
-      disabledBackground: alpha("#ffffff", 0.08),
+      hover: alpha(t.gold, 0.08),
+      selected: alpha(t.gold, 0.18),
+      disabled: alpha(t.ivory, 0.28),
+      disabledBackground: alpha("#fff", 0.06),
     },
   },
   shape: {
     borderRadius: 14,
   },
   typography: {
-    fontFamily: '"Inter", "Segoe UI", system-ui, sans-serif',
-    fontWeightBold: 800,
+    fontFamily: '"Source Serif 4", "Georgia", "Times New Roman", serif',
+    fontWeightBold: 700,
+    h1: {
+      fontFamily: '"Cormorant Garamond", "Georgia", serif',
+      fontWeight: 600,
+      letterSpacing: "-0.02em",
+    },
+    h2: {
+      fontFamily: '"Cormorant Garamond", "Georgia", serif',
+      fontWeight: 600,
+      letterSpacing: "-0.02em",
+    },
+    h3: {
+      fontFamily: '"Cormorant Garamond", "Georgia", serif',
+      fontWeight: 600,
+      letterSpacing: "-0.02em",
+    },
     h4: {
-      fontWeight: 800,
+      fontFamily: '"Cormorant Garamond", "Georgia", serif',
+      fontWeight: 600,
       letterSpacing: "-0.03em",
     },
     h5: {
-      fontWeight: 800,
+      fontFamily: '"Cormorant Garamond", "Georgia", serif',
+      fontWeight: 600,
       letterSpacing: "-0.02em",
     },
     h6: {
-      fontWeight: 700,
+      fontFamily: '"Cormorant Garamond", "Georgia", serif',
+      fontWeight: 600,
       letterSpacing: "-0.02em",
     },
+    subtitle1: {
+      fontFamily: '"Cormorant Garamond", "Georgia", serif',
+      fontWeight: 500,
+    },
+    subtitle2: {
+      fontFamily: '"Cormorant Garamond", "Georgia", serif',
+      fontWeight: 500,
+    },
+    body1: {
+      fontSize: "1.0625rem",
+      lineHeight: 1.75,
+    },
+    body2: {
+      lineHeight: 1.7,
+    },
     button: {
-      fontWeight: 700,
+      fontFamily: '"Source Serif 4", "Georgia", serif',
+      fontWeight: 600,
       textTransform: "none",
-      letterSpacing: "0.02em",
+      letterSpacing: "0.06em",
+    },
+    caption: {
+      letterSpacing: "0.04em",
     },
   },
   components: {
@@ -71,10 +113,11 @@ export const courseCorrectTheme = createTheme({
           scrollBehavior: "smooth",
         },
         body: {
-          backgroundColor: ccTokens.voidDeep,
+          backgroundColor: t.midnight,
           backgroundImage: `
-            radial-gradient(ellipse 120% 80% at 50% -20%, ${alpha(ccTokens.bloom, 0.12)}, transparent 50%),
-            radial-gradient(ellipse 80% 50% at 100% 0%, ${alpha(ccTokens.violet, 0.08)}, transparent 45%)
+            radial-gradient(ellipse 120% 70% at 50% -15%, ${alpha(t.gold, 0.09)}, transparent 52%),
+            radial-gradient(ellipse 80% 45% at 100% 0%, ${alpha(t.oxford, 0.35)}, transparent 48%),
+            radial-gradient(ellipse 60% 40% at 0% 100%, ${alpha(t.goldBurnished, 0.06)}, transparent 50%)
           `,
         },
       },
@@ -86,13 +129,10 @@ export const courseCorrectTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: "none",
-          backdropFilter: "blur(18px) saturate(150%)",
-          WebkitBackdropFilter: "blur(18px) saturate(150%)",
-          border: `1px solid ${ccTokens.line}`,
-          boxShadow: `
-            inset 0 1px 0 ${alpha("#fff", 0.06)},
-            0 18px 60px rgba(0, 0, 0, 0.45)
-          `,
+          backgroundColor: t.parchment,
+          color: t.ink,
+          border: `1px solid ${alpha(t.gold, 0.28)}`,
+          boxShadow: `${t.shadowLift}, inset 0 1px 0 ${alpha("#fff", 0.65)}`,
         },
       },
     },
@@ -103,37 +143,47 @@ export const courseCorrectTheme = createTheme({
       },
       styleOverrides: {
         root: {
-          backgroundColor: alpha(ccTokens.voidDeep, 0.72),
-          backdropFilter: "blur(20px) saturate(160%)",
-          WebkitBackdropFilter: "blur(20px) saturate(160%)",
-          borderBottom: `1px solid ${ccTokens.line}`,
-          boxShadow: "none",
+          background: `linear-gradient(180deg, ${alpha(t.panel, 0.97)} 0%, ${alpha(t.midnight, 0.92)} 100%)`,
+          backdropFilter: "blur(20px) saturate(140%)",
+          WebkitBackdropFilter: "blur(20px) saturate(140%)",
+          borderBottom: `1px solid ${t.ruleHair}`,
+          boxShadow: `inset 0 -1px 0 ${alpha(t.gold, 0.12)}`,
+          color: t.ivory,
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: alpha(ccTokens.elevated, 0.98),
-          backdropFilter: "blur(16px)",
-          borderLeft: `1px solid ${ccTokens.line}`,
+          background: `linear-gradient(180deg, ${alpha(t.oxford, 0.55)}, ${alpha(t.panel, 0.99)})`,
+          backdropFilter: "blur(18px)",
+          borderLeft: `1px solid ${t.ruleHair}`,
+          color: t.ivory,
+          boxShadow: `-12px 0 48px rgba(0,0,0,0.45)`,
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         containedPrimary: {
-          boxShadow: `0 0 28px ${alpha(ccTokens.bloom, 0.35)}`,
+          boxShadow: `0 4px 24px ${alpha(t.gold, 0.35)}`,
           "&:hover": {
-            boxShadow: `0 0 36px ${alpha(ccTokens.bloom, 0.45)}`,
+            boxShadow: `0 6px 32px ${alpha(t.gold, 0.42)}`,
             backgroundColor: primaryHover,
           },
         },
         outlinedPrimary: {
-          borderColor: alpha(ccTokens.bloom, 0.55),
+          borderColor: alpha(t.gold, 0.55),
+          color: t.ivory,
           "&:hover": {
-            borderColor: ccTokens.bloom,
-            backgroundColor: alpha(ccTokens.bloom, 0.08),
+            borderColor: t.goldBright,
+            backgroundColor: alpha(t.gold, 0.08),
+          },
+        },
+        textPrimary: {
+          color: t.goldBright,
+          "&:hover": {
+            backgroundColor: alpha(t.gold, 0.08),
           },
         },
       },
@@ -143,18 +193,18 @@ export const courseCorrectTheme = createTheme({
         indicator: {
           height: 3,
           borderRadius: 3,
-          background: `linear-gradient(90deg, ${ccTokens.bloom}, ${ccTokens.violet})`,
-          boxShadow: `0 0 16px ${alpha(ccTokens.bloom, 0.4)}`,
+          background: `linear-gradient(90deg, ${t.goldBurnished}, ${t.goldBright})`,
+          boxShadow: `0 0 14px ${alpha(t.gold, 0.45)}`,
         },
       },
     },
     MuiTab: {
       styleOverrides: {
         root: {
-          fontWeight: 700,
+          fontWeight: 600,
           "&.Mui-selected": {
-            color: ccTokens.chrome,
-            textShadow: `0 0 24px ${alpha(ccTokens.bloom, 0.35)}`,
+            color: t.ivory,
+            textShadow: `0 0 28px ${alpha(t.gold, 0.35)}`,
           },
         },
       },
@@ -162,39 +212,91 @@ export const courseCorrectTheme = createTheme({
     MuiChip: {
       styleOverrides: {
         outlined: {
-          borderColor: alpha(ccTokens.bloom, 0.35),
+          borderColor: alpha(t.gold, 0.45),
+          "& .MuiChip-icon": {
+            color: t.gold,
+          },
         },
       },
     },
     MuiDialog: {
       styleOverrides: {
         paper: {
-          backgroundColor: alpha(ccTokens.elevated, 0.97),
-          border: `1px solid ${ccTokens.line}`,
+          backgroundColor: t.parchment,
+          color: t.ink,
+          border: `1px solid ${alpha(t.gold, 0.35)}`,
+          boxShadow: `${t.shadowLift}, inset 0 1px 0 ${alpha("#fff", 0.7)}`,
         },
       },
     },
     MuiAlert: {
       styleOverrides: {
         standardError: {
-          backgroundColor: alpha(ccTokens.rose, 0.12),
-          color: ccTokens.chrome,
-          border: `1px solid ${alpha(ccTokens.rose, 0.35)}`,
+          backgroundColor: alpha("#c45c6a", 0.12),
+          color: t.ivory,
+          border: `1px solid ${alpha("#c45c6a", 0.45)}`,
         },
         standardSuccess: {
-          backgroundColor: alpha(ccTokens.mint, 0.1),
-          color: ccTokens.chrome,
-          border: `1px solid ${alpha(ccTokens.mint, 0.35)}`,
+          backgroundColor: alpha("#6b9b7a", 0.12),
+          color: t.ivory,
+          border: `1px solid ${alpha("#6b9b7a", 0.4)}`,
+        },
+        standardInfo: {
+          backgroundColor: alpha(t.oxford, 0.25),
+          color: t.ivory,
+          border: `1px solid ${alpha(t.gold, 0.35)}`,
         },
       },
     },
     MuiPaginationItem: {
       styleOverrides: {
         root: {
+          fontFamily: '"Source Serif 4", serif',
           "&.Mui-selected": {
-            background: `linear-gradient(135deg, ${alpha(ccTokens.bloom, 0.35)}, ${alpha(ccTokens.violet, 0.25)})`,
-            color: ccTokens.chrome,
+            background: `linear-gradient(135deg, ${alpha(t.gold, 0.45)}, ${alpha(t.goldBurnished, 0.35)})`,
+            color: t.midnight,
+            fontWeight: 700,
           },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: alpha(t.ink, 0.22),
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: alpha(t.gold, 0.45),
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: t.gold,
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          "&.Mui-focused": {
+            color: t.goldBurnished,
+          },
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: t.parchment,
+          color: t.ink,
+          border: `1px solid ${alpha(t.gold, 0.3)}`,
+        },
+      },
+    },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          color: t.goldBright,
         },
       },
     },

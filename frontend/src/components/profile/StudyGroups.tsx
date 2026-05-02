@@ -7,6 +7,13 @@ import {
   Chip,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
+import {
+  ivyBodyMutedSx,
+  ivyEmptyStateSx,
+  ivyFieldLabelSx,
+  ivyNestedCardSx,
+  ivyParticipantChipSx,
+} from "@/components/profile/ivyProfileCards";
 
 const StudyGroups = ({
   user,
@@ -19,10 +26,23 @@ const StudyGroups = ({
 
   return (
     <>
-      <Typography variant="h5" fontWeight={700} mb={2} id="study-groups">
+      <Typography
+        variant="h5"
+        fontWeight={700}
+        mb={2}
+        id="study-groups"
+        sx={{ fontFamily: '"Cormorant Garamond", Georgia, serif', letterSpacing: "0.02em" }}
+      >
         Study Groups ({userStudyGroups.length})
       </Typography>
-      <Card sx={{ mb: 4 }}>
+      <Card
+        sx={{
+          mb: 4,
+          bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+          border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
+          boxShadow: `inset 0 1px 0 ${alpha("#fff", 0.55)}, 0 16px 48px ${alpha("#000", 0.12)}`,
+        }}
+      >
         <CardContent>
           {userStudyGroups.length > 0 ? (
             <Box sx={{ display: "grid", gap: 3 }}>
@@ -31,14 +51,12 @@ const StudyGroups = ({
                   key={group._id}
                   sx={{
                     p: { xs: 2, sm: 3 },
-                    borderLeft: "4px solid",
-                    borderColor: "primary.main",
+                    ...ivyNestedCardSx,
                     "&:hover": {
-                      boxShadow: (t) =>
-                        `0 12px 40px ${alpha("#000", 0.35)}, 0 0 40px ${alpha(t.palette.primary.main, 0.15)}`,
-                      transform: "translateY(-3px)",
+                      transform: "translateY(-2px)",
+                      boxShadow: (theme) =>
+                        `inset 0 1px 0 ${alpha("#fff", 0.9)}, 0 16px 44px ${alpha("#000", 0.12)}, 0 0 0 1px ${alpha(theme.palette.primary.main, 0.35)}`,
                     },
-                    transition: "all 0.25s ease",
                   }}
                   role="article"
                   aria-labelledby={`group-title-${group._id}`}
@@ -47,17 +65,17 @@ const StudyGroups = ({
                     <Typography
                       variant="h6"
                       id={`group-title-${group._id}`}
-                      color="primary"
                       gutterBottom
+                      sx={{
+                        fontFamily: '"Cormorant Garamond", Georgia, serif',
+                        fontWeight: 600,
+                        color: (theme) => theme.palette.primary.dark,
+                      }}
                     >
                       {group.title}
                     </Typography>
                     {group.description && (
-                      <Typography
-                        color="text.secondary"
-                        sx={{ mb: 2 }}
-                        component="p"
-                      >
+                      <Typography sx={{ ...ivyBodyMutedSx, mb: 2 }} component="p">
                         {group.description}
                       </Typography>
                     )}
@@ -72,39 +90,50 @@ const StudyGroups = ({
                     }}
                   >
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography component="span" sx={ivyFieldLabelSx}>
                         Subject
                       </Typography>
-                      <Typography>{group.subject}</Typography>
+                      <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.87) }}>
+                        {group.subject}
+                      </Typography>
                     </Box>
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography component="span" sx={ivyFieldLabelSx}>
                         Date & Time
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.87) }}>
                         {new Date(group.date).toLocaleDateString()} at{" "}
                         {group.time}
                       </Typography>
                     </Box>
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography component="span" sx={ivyFieldLabelSx}>
                         Duration
                       </Typography>
-                      <Typography>{group.duration} minutes</Typography>
+                      <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.87) }}>
+                        {group.duration} minutes
+                      </Typography>
                     </Box>
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography component="span" sx={ivyFieldLabelSx}>
                         Created by
                       </Typography>
-                      <Typography>{group.creator.name}</Typography>
+                      <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.87) }}>
+                        {group.creator.name}
+                      </Typography>
                     </Box>
                   </Box>
 
-                  <Box sx={{ mt: 2 }}>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      pt: 2,
+                      borderTop: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+                    }}
+                  >
                     <Typography
-                      variant="subtitle2"
-                      color="text.secondary"
-                      gutterBottom
+                      component="span"
+                      sx={{ ...ivyFieldLabelSx, mb: 1.25 }}
                     >
                       Participants ({group.participants.length})
                     </Typography>
@@ -121,18 +150,7 @@ const StudyGroups = ({
                           key={participant._id}
                           label={participant.name}
                           size="small"
-                          variant="outlined"
-                          sx={{
-                            borderRadius: 1,
-                            borderColor: (t) =>
-                              participant._id === group.creator._id
-                                ? alpha(t.palette.primary.main, 0.45)
-                                : alpha(t.palette.divider, 1),
-                            backgroundColor: (t) =>
-                              participant._id === group.creator._id
-                                ? alpha(t.palette.primary.main, 0.12)
-                                : "transparent",
-                          }}
+                          sx={ivyParticipantChipSx(participant._id === group.creator._id)}
                         />
                       ))}
                     </Box>
@@ -193,7 +211,7 @@ const StudyGroups = ({
               ))}
             </Box>
           ) : (
-            <Typography>No study groups joined yet.</Typography>
+            <Typography sx={ivyEmptyStateSx}>No study groups joined yet.</Typography>
           )}
         </CardContent>
       </Card>

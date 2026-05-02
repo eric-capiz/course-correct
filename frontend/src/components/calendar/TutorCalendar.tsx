@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Box, Typography, Paper, Grid, IconButton } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { visuallyHidden } from "@mui/utils";
 import { useTutorAvailability } from "@/context/tutorAvailability/tutorAvailabilityContext";
+import { ivyTokens } from "@/theme/tokens";
 
 interface TutorCalendarProps {
   onDateSelect: (date: Date) => void;
@@ -73,7 +75,16 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <Paper elevation={0} sx={{ p: 2 }} role="region" aria-label="Calendar">
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2,
+        color: ivyTokens.ink,
+        bgcolor: "background.paper",
+      }}
+      role="region"
+      aria-label="Calendar"
+    >
       <Box
         sx={{
           display: "flex",
@@ -82,16 +93,39 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
           mb: 2,
         }}
       >
-        <IconButton onClick={handlePreviousMonth} aria-label="Previous month" color="primary">
+        <IconButton
+          onClick={handlePreviousMonth}
+          aria-label="Previous month"
+          sx={{
+            color: ivyTokens.goldBurnished,
+            "&:hover": { bgcolor: alpha(ivyTokens.gold, 0.12) },
+          }}
+        >
           <ChevronLeftIcon />
         </IconButton>
-        <Typography variant="h6" component="h2" id="current-month">
+        <Typography
+          variant="h6"
+          component="h2"
+          id="current-month"
+          sx={{
+            fontFamily: '"Cormorant Garamond", Georgia, serif',
+            fontWeight: 600,
+            color: alpha(ivyTokens.ink, 0.92),
+          }}
+        >
           {currentDate.toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
           })}
         </Typography>
-        <IconButton onClick={handleNextMonth} aria-label="Next month" color="primary">
+        <IconButton
+          onClick={handleNextMonth}
+          aria-label="Next month"
+          sx={{
+            color: ivyTokens.goldBurnished,
+            "&:hover": { bgcolor: alpha(ivyTokens.gold, 0.12) },
+          }}
+        >
           <ChevronRightIcon />
         </IconButton>
       </Box>
@@ -102,9 +136,11 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
             <Typography
               align="center"
               sx={{
-                fontWeight: 500,
-                color: "text.secondary",
-                fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                fontSize: { xs: "0.65rem", sm: "0.75rem" },
+                color: alpha(ivyTokens.ink, 0.58),
               }}
             >
               {day}
@@ -156,15 +192,18 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
                   borderRadius: 1,
                   cursor: isPastOrToday ? "not-allowed" : "pointer",
                   backgroundColor: isSelected ? "primary.main" : "transparent",
+                  /* Ivory theme text.primary is illegible on parchment — use ink */
                   color: isPastOrToday
-                    ? "text.disabled"
+                    ? alpha(ivyTokens.ink, 0.28)
                     : isSelected
                       ? "primary.contrastText"
-                      : "text.primary",
+                      : alpha(ivyTokens.ink, 0.92),
                   ...(!isPastOrToday
                     ? {
                         "&:hover": {
-                          backgroundColor: isSelected ? "primary.dark" : "action.hover",
+                          backgroundColor: isSelected
+                            ? "primary.dark"
+                            : alpha(ivyTokens.gold, 0.14),
                         },
                         "&:focus-visible": {
                           outline: "2px solid",
@@ -186,13 +225,20 @@ const TutorCalendar = ({ onDateSelect, selectedDate }: TutorCalendarProps) => {
                           left: "20%",
                           width: "60%",
                           height: "2px",
-                          backgroundColor: "warning.light",
+                          backgroundColor: ivyTokens.gold,
                           borderRadius: "2px",
+                          opacity: isSelected ? 0.95 : 0.85,
                         }
                       : {},
                 }}
               >
-                <Typography sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}>
+                <Typography
+                  sx={{
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                    fontWeight: isSelected ? 700 : 600,
+                    color: "inherit",
+                  }}
+                >
                   {day}
                 </Typography>
                 {isSelected && <Box sx={visuallyHidden}>Selected date</Box>}

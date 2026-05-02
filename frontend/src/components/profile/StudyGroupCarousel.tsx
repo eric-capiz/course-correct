@@ -8,8 +8,15 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useState } from "react";
+import {
+  ivyBodyMutedSx,
+  ivyEmptyStateSx,
+  ivyFieldLabelSx,
+  ivyNestedCardSx,
+} from "@/components/profile/ivyProfileCards";
 
 const StudyGroupCarousel = ({
   user,
@@ -65,18 +72,25 @@ const StudyGroupCarousel = ({
         id="available-study-groups"
         sx={{
           fontSize: { xs: "1.25rem", sm: "1.5rem" },
+          fontFamily: '"Cormorant Garamond", Georgia, serif',
+          letterSpacing: "0.02em",
         }}
       >
         Available Study Groups ({availableStudyGroups.length})
       </Typography>
-      <Card>
+      <Card
+        sx={{
+          bgcolor: (theme) => alpha(theme.palette.background.paper, 1),
+          border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
+          boxShadow: `inset 0 1px 0 ${alpha("#fff", 0.55)}, 0 16px 48px ${alpha("#000", 0.12)}`,
+        }}
+      >
         <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
           {availableStudyGroups.length === 0 ? (
             <Typography
               sx={{
-                textAlign: "center",
+                ...ivyEmptyStateSx,
                 py: 4,
-                color: "text.secondary",
                 fontSize: "1.1rem",
               }}
             >
@@ -100,10 +114,9 @@ const StudyGroupCarousel = ({
                     width: { xs: "100%", sm: getCardWidth() },
                     height: getCardHeight(),
                     p: { xs: 2, sm: 3 },
-                    borderLeft: "4px solid",
-                    borderColor: "primary.main",
                     display: "flex",
                     flexDirection: "column",
+                    ...ivyNestedCardSx,
                   }}
                 >
                   <StudyGroupContent
@@ -186,11 +199,10 @@ const StudyGroupCarousel = ({
                         visibility:
                           Math.abs(position) <= 1 ? "visible" : "hidden",
                         p: { xs: 1.5, sm: 3 },
-                        borderLeft: "4px solid",
-                        borderColor: "primary.main",
                         display: "flex",
                         flexDirection: "column",
                         zIndex: position === 0 ? 2 : 1,
+                        ...ivyNestedCardSx,
                       }}
                     >
                       <StudyGroupContent
@@ -260,15 +272,16 @@ const StudyGroupContent = ({
   isMobile,
 }) => (
   <>
-    <Box sx={{ flex: 1 }}>
+    <Box sx={{ flex: 1, minHeight: 0 }}>
       <Typography
         variant="h6"
-        color="primary"
         gutterBottom
         sx={{
           fontSize: { xs: "1.1rem", sm: "1.5rem" },
           fontWeight: 600,
           lineHeight: { xs: 1.2, sm: 1.5 },
+          fontFamily: '"Cormorant Garamond", Georgia, serif',
+          color: (theme) => theme.palette.primary.dark,
         }}
       >
         {group.title}
@@ -276,16 +289,16 @@ const StudyGroupContent = ({
 
       {group.description && (
         <Typography
-          color="text.secondary"
           sx={{
+            ...ivyBodyMutedSx,
             mb: { xs: 2, sm: 3 },
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            fontSize: { xs: "0.9rem", sm: "1.1rem" },
-            lineHeight: { xs: 1.4, sm: 1.6 },
+            fontSize: { xs: "0.9rem", sm: "1.05rem" },
+            lineHeight: { xs: 1.45, sm: 1.6 },
           }}
         >
           {group.description}
@@ -293,40 +306,46 @@ const StudyGroupContent = ({
       )}
 
       <Box sx={{ mb: { xs: 2, sm: 2.5 } }}>
-        <Typography
-          variant="subtitle2"
-          color="text.secondary"
-          sx={{ fontSize: { xs: "0.8rem", sm: "1rem" } }}
-        >
+        <Typography component="span" sx={ivyFieldLabelSx}>
           Subject
         </Typography>
-        <Typography sx={{ fontSize: { xs: "0.9rem", sm: "1.1rem" } }}>
+        <Typography
+          sx={{
+            fontSize: { xs: "0.9rem", sm: "1.05rem" },
+            fontWeight: 600,
+            color: (theme) => alpha(theme.palette.common.black, 0.88),
+          }}
+        >
           {group.subject}
         </Typography>
       </Box>
 
       <Box sx={{ mb: { xs: 2, sm: 2.5 } }}>
-        <Typography
-          variant="subtitle2"
-          color="text.secondary"
-          sx={{ fontSize: { xs: "0.8rem", sm: "1rem" } }}
-        >
+        <Typography component="span" sx={ivyFieldLabelSx}>
           Date & Time
         </Typography>
-        <Typography sx={{ fontSize: { xs: "0.9rem", sm: "1.1rem" } }}>
+        <Typography
+          sx={{
+            fontSize: { xs: "0.9rem", sm: "1.05rem" },
+            fontWeight: 600,
+            color: (theme) => alpha(theme.palette.common.black, 0.88),
+          }}
+        >
           {new Date(group.date).toLocaleDateString()} at {group.time}
         </Typography>
       </Box>
 
       <Box sx={{ mb: { xs: 2, sm: 2.5 } }}>
-        <Typography
-          variant="subtitle2"
-          color="text.secondary"
-          sx={{ fontSize: { xs: "0.8rem", sm: "1rem" } }}
-        >
+        <Typography component="span" sx={ivyFieldLabelSx}>
           Created by
         </Typography>
-        <Typography sx={{ fontSize: { xs: "0.9rem", sm: "1.1rem" } }}>
+        <Typography
+          sx={{
+            fontSize: { xs: "0.9rem", sm: "1.05rem" },
+            fontWeight: 600,
+            color: (theme) => alpha(theme.palette.common.black, 0.88),
+          }}
+        >
           {group.creator.name}
         </Typography>
       </Box>

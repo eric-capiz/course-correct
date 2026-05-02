@@ -19,6 +19,7 @@ import {
   Alert,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { ivyBodyMutedSx, ivyParchmentTextFieldSx } from "@/components/profile/ivyProfileCards";
 
 interface User {
   _id: string;
@@ -147,7 +148,7 @@ const EditProfileDialog = ({
     >
       <DialogTitle id="edit-profile-title">Edit Profile</DialogTitle>
       <DialogContent sx={{ p: { xs: 2, sm: 3 } }}>
-        <Typography id="edit-profile-description" sx={{ mb: 2 }}>
+        <Typography id="edit-profile-description" sx={{ ...ivyBodyMutedSx, mb: 2 }}>
           Only changed fields will be updated.
         </Typography>
         <form onSubmit={handleSubmit} noValidate id="edit-profile-form">
@@ -168,6 +169,7 @@ const EditProfileDialog = ({
                 "aria-label": "Name",
               }}
               size="medium"
+              sx={ivyParchmentTextFieldSx}
             />
             <TextField
               label="Username"
@@ -179,6 +181,7 @@ const EditProfileDialog = ({
                 "aria-label": "Username",
               }}
               size="medium"
+              sx={ivyParchmentTextFieldSx}
             />
             <TextField
               label="Email"
@@ -191,8 +194,9 @@ const EditProfileDialog = ({
                 "aria-label": "Email",
               }}
               size="medium"
+              sx={ivyParchmentTextFieldSx}
             />
-            <FormControl fullWidth size="medium">
+            <FormControl fullWidth size="medium" sx={ivyParchmentTextFieldSx}>
               <InputLabel id="role-label">Role</InputLabel>
               <Select
                 labelId="role-label"
@@ -211,7 +215,7 @@ const EditProfileDialog = ({
                 <MenuItem value="tutor">Tutor</MenuItem>
               </Select>
             </FormControl>
-            <FormControl fullWidth size="medium">
+            <FormControl fullWidth size="medium" sx={ivyParchmentTextFieldSx}>
               <InputLabel id="grade-level-label">Grade Level</InputLabel>
               <Select
                 labelId="grade-level-label"
@@ -249,6 +253,7 @@ const EditProfileDialog = ({
                 "aria-label": "Subjects",
               }}
               size="medium"
+              sx={ivyParchmentTextFieldSx}
             />
             <TextField
               label="New Password (Optional)"
@@ -258,6 +263,7 @@ const EditProfileDialog = ({
               onChange={handleChange}
               fullWidth
               size="medium"
+              sx={ivyParchmentTextFieldSx}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

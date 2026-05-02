@@ -76,13 +76,13 @@ const Navbar = () => {
             variant="h6"
             component="div"
             sx={{
-              fontWeight: 800,
-              letterSpacing: "-0.04em",
-              background: (t) =>
-                `linear-gradient(92deg, ${t.palette.text.primary} 0%, ${t.palette.primary.light} 45%, ${t.palette.secondary.main} 100%)`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              fontFamily: '"Cormorant Garamond", Georgia, serif',
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "text.primary",
+              textShadow: (theme) =>
+                `0 1px 0 ${alpha("#000", 0.35)}, 0 0 48px ${alpha(theme.palette.primary.main, 0.25)}`,
             }}
           >
             <Link
@@ -173,15 +173,15 @@ const Navbar = () => {
             variant="h6"
             component="div"
             sx={{
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
+              fontFamily: '"Cormorant Garamond", Georgia, serif',
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
               flexGrow: 1,
               textAlign: "center",
-              background: (t) =>
-                `linear-gradient(92deg, ${t.palette.text.primary} 0%, ${t.palette.primary.light} 100%)`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              color: "text.primary",
+              textShadow: (theme) =>
+                `0 1px 0 ${alpha("#000", 0.35)}, 0 0 40px ${alpha(theme.palette.primary.main, 0.22)}`,
             }}
           >
             <Link

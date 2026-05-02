@@ -1,4 +1,4 @@
-import { ccTokens } from "@/theme/tokens";
-
-/** Landing sections — same tokens as global cosmic theme */
-export const homePalette = ccTokens;
+/**
+ * Landing sections — same tokens as the global ivy theme (single source of truth).
+ */
+export { ivyTokens as homePalette } from "@/theme/tokens";

@@ -53,8 +53,9 @@ const LearningHub = () => {
             fontWeight: 900,
             letterSpacing: "-0.04em",
             fontSize: { xs: "clamp(1.75rem, 5vw, 2.25rem)", md: "2.5rem" },
+            fontFamily: '"Cormorant Garamond", Georgia, serif',
             background: (t) =>
-              `linear-gradient(95deg, ${t.palette.text.primary} 0%, ${t.palette.primary.light} 55%, ${t.palette.secondary.main} 100%)`,
+              `linear-gradient(95deg, ${t.palette.text.primary} 0%, ${t.palette.primary.main} 40%, ${t.palette.primary.light} 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",

@@ -13,6 +13,13 @@ import {
   DialogActions,
   Alert,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import {
+  ivyBodyMutedSx,
+  ivyEmptyStateSx,
+  ivyFieldLabelSx,
+  ivyNestedCardSx,
+} from "@/components/profile/ivyProfileCards";
 import { useTutorAvailability } from "@/context/tutorAvailability/tutorAvailabilityContext";
 import { bookTutor } from "@/services/booking/bookingService";
 import { useBooking } from "@/context/booking/bookingContext";
@@ -133,7 +140,7 @@ const TutorAvailabilityCards = () => {
         </Alert>
       )}
       {!error && availability.length === 0 && (
-        <Typography color="text.secondary" sx={{ py: 4 }}>
+        <Typography sx={{ ...ivyEmptyStateSx, py: 4 }}>
           No tutor sessions available right now. Check back later or ask a tutor
           to add availability.
         </Typography>
@@ -164,47 +171,57 @@ const TutorAvailabilityCards = () => {
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
+                p: 0,
+                overflow: "hidden",
+                ...ivyNestedCardSx,
                 transition: "transform 0.25s ease, box-shadow 0.25s ease",
                 "&:hover": {
                   transform: "translateY(-4px)",
-                  boxShadow: (t) =>
-                    `0 24px 60px rgba(0,0,0,0.45), 0 0 48px ${t.palette.primary.main}22`,
+                  boxShadow: (theme) =>
+                    `inset 0 1px 0 ${alpha("#fff", 0.85)}, 0 20px 50px ${alpha("#000", 0.14)}, 0 0 48px ${alpha(theme.palette.primary.main, 0.18)}`,
                 },
               }}
             >
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h6" component="h3" gutterBottom>
-                  <span aria-label="Tutor name">Tutor: {slot.tutor.name}</span>
-                </Typography>
-                <Typography variant="subtitle1" color="primary">
-                  <span aria-label="Subject">Subject: {slot.subject}</span>
-                </Typography>
-                <Typography variant="subtitle1" color="primary">
-                  <span aria-label="Subject">
-                    Grade Level: {slot.tutor.gradeLevel}
-                  </span>
-                </Typography>
+              <CardContent sx={{ flexGrow: 1, p: { xs: 2, sm: 2.5 } }}>
                 <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mb: 1 }}
+                  variant="h6"
+                  component="h3"
+                  gutterBottom
+                  sx={{
+                    fontFamily: '"Cormorant Garamond", Georgia, serif',
+                    fontWeight: 600,
+                    color: (theme) => theme.palette.primary.dark,
+                  }}
                 >
-                  <span aria-label="Session date">
-                    {formatDayLocal(slot.day)}
-                  </span>
+                  <span aria-label="Tutor name">{slot.tutor.name}</span>
                 </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mb: 2 }}
-                >
+                <Box sx={{ mb: 1.5 }}>
+                  <Typography component="span" sx={ivyFieldLabelSx}>
+                    Subject
+                  </Typography>
+                  <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.88) }}>
+                    {slot.subject}
+                  </Typography>
+                </Box>
+                <Box sx={{ mb: 1.5 }}>
+                  <Typography component="span" sx={ivyFieldLabelSx}>
+                    Grade level
+                  </Typography>
+                  <Typography sx={{ fontWeight: 600, color: (theme) => alpha(theme.palette.common.black, 0.88) }}>
+                    {slot.tutor.gradeLevel}
+                  </Typography>
+                </Box>
+                <Typography sx={{ ...ivyBodyMutedSx, mb: 1 }} component="p">
+                  <span aria-label="Session date">{formatDayLocal(slot.day)}</span>
+                </Typography>
+                <Typography sx={{ ...ivyBodyMutedSx, mb: 2, fontWeight: 600 }} component="p">
                   <span aria-label="Session time">
                     {new Date(slot.startTime).toLocaleString("en-US", {
                       hour: "numeric",
                       minute: "numeric",
                       hour12: true,
                     })}
-                    {" - "}
+                    {" – "}
                     {new Date(slot.endTime).toLocaleString("en-US", {
                       hour: "numeric",
                       minute: "numeric",

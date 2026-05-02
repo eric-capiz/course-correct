@@ -10,10 +10,12 @@ export default function Home() {
     <Box
       id="home-page"
       sx={{
-        bgcolor: homePalette.void,
+        bgcolor: homePalette.midnight,
         overflow: "hidden",
+        position: "relative",
       }}
     >
+      <Box className="ivy-binding" aria-hidden />
       <Hero />
       <HowItWorks />
       <Features />
