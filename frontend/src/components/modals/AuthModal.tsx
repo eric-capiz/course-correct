@@ -9,9 +9,16 @@ import {
   MenuItem,
   CircularProgress,
   Alert,
+  Paper,
 } from "@mui/material";
 import { Close, Visibility, VisibilityOff } from "@mui/icons-material";
+import { alpha } from "@mui/material/styles";
 import { useAuth } from "@/context/auth/authContext";
+import {
+  ivyParchmentHelperTextSx,
+  ivyParchmentIconButtonSx,
+  ivyParchmentTextFieldSx,
+} from "@/components/profile/ivyProfileCards";
 
 const roles = ["student", "tutor"];
 const gradeLevels = [
@@ -52,40 +59,36 @@ const AuthModal = ({
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Autofocus first input when modal opens
   useEffect(() => {
     if (open) {
       setTimeout(() => {
-        const firstInput = document.querySelector<HTMLInputElement>("input");
+        const firstInput = document.querySelector<HTMLInputElement>(
+          '[data-auth-modal] input'
+        );
         firstInput?.focus();
       }, 100);
     }
   }, [open]);
 
-  // Handle keyboard events
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Escape") onClose();
     if (e.key === "Enter") handleSubmit();
   };
 
-  // Handle input change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
 
     try {
       if (isLogin) {
-        // Login
         await login({ email: formData.email, password: formData.password });
       } else {
-        // Signup
         await signup({
           name: formData.name,
           username: formData.username,
@@ -98,7 +101,10 @@ const AuthModal = ({
       }
       onClose();
     } catch (err: unknown) {
-      const ax = err as { response?: { data?: { message?: string } }; message?: string };
+      const ax = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       const apiMessage = ax.response?.data?.message;
       const fallback = isLogin
         ? "Invalid email or password. Please check your credentials and try again."
@@ -114,46 +120,52 @@ const AuthModal = ({
       open={open}
       onClose={onClose}
       onKeyDown={handleKeyDown}
-      BackdropProps={{ sx: { backgroundColor: "rgba(0, 0, 0, 0.6)" } }}
+      BackdropProps={{
+        sx: {
+          backgroundColor: alpha("#000000", 0.72),
+          backdropFilter: "blur(6px)",
+        },
+      }}
     >
-      <Box
+      <Paper
+        data-auth-modal
+        elevation={0}
         sx={{
-          backgroundColor: "var(--background-light)",
-          color: "var(--text-light)",
-          maxWidth: "400px",
+          maxWidth: 440,
+          width: "calc(100% - 32px)",
           mx: "auto",
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          p: 4,
-          borderRadius: "8px",
-          boxShadow: 3,
+          p: { xs: 3, sm: 4 },
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          borderRadius: 3,
+          border: (t) => `1px solid ${alpha(t.palette.primary.main, 0.25)}`,
+          boxShadow: (t) =>
+            `0 0 0 1px ${alpha("#fff", 0.04)}, 0 32px 100px ${alpha("#000", 0.55)}, 0 0 60px ${alpha(t.palette.primary.main, 0.12)}`,
         }}
       >
         <IconButton
           onClick={onClose}
-          sx={{ alignSelf: "flex-end", color: "var(--text-light)" }}
+          sx={{ alignSelf: "flex-end", ...ivyParchmentIconButtonSx }}
           aria-label="Close authentication modal"
         >
           <Close />
         </IconButton>
 
-        <Typography variant="h5" fontWeight={700} textAlign="center">
+        <Typography variant="h5" fontWeight={600} textAlign="center" sx={{ color: "inherit" }}>
           {isLogin ? "Log In" : "Sign Up"}
         </Typography>
 
-        {/* Error Message */}
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ mb: 1 }}>
             {error}
           </Alert>
         )}
 
-        {/* Form Fields */}
         {!isLogin && (
           <>
             <TextField
@@ -163,6 +175,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             />
             <TextField
               label="Username"
@@ -171,6 +184,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             />
           </>
         )}
@@ -183,6 +197,7 @@ const AuthModal = ({
           onChange={handleChange}
           fullWidth
           required
+          sx={ivyParchmentTextFieldSx}
         />
         <TextField
           label="Password"
@@ -192,11 +207,13 @@ const AuthModal = ({
           onChange={handleChange}
           fullWidth
           required
+          sx={ivyParchmentTextFieldSx}
           InputProps={{
             endAdornment: (
               <IconButton
                 onClick={() => setShowPassword(!showPassword)}
                 edge="end"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
@@ -214,6 +231,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             >
               {roles.map((role) => (
                 <MenuItem key={role} value={role}>
@@ -230,6 +248,7 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             >
               {gradeLevels.map((level) => (
                 <MenuItem key={level} value={level}>
@@ -245,22 +264,22 @@ const AuthModal = ({
               onChange={handleChange}
               fullWidth
               required
+              sx={ivyParchmentTextFieldSx}
             />
           </>
         )}
 
-        {/* Submit Button */}
         <Button
           variant="contained"
+          color="primary"
+          size="large"
           onClick={handleSubmit}
           disabled={loading}
-          sx={{
-            backgroundColor: "var(--primary-color)",
-            "&:hover": { backgroundColor: "var(--button-primary-hover)" },
-          }}
+          fullWidth
+          sx={{ py: 1.25, mt: 1 }}
         >
           {loading ? (
-            <CircularProgress size={24} sx={{ color: "white" }} />
+            <CircularProgress size={26} sx={{ color: "primary.contrastText" }} />
           ) : isLogin ? (
             "Log In"
           ) : (
@@ -268,17 +287,18 @@ const AuthModal = ({
           )}
         </Button>
 
-        <Typography variant="body2" textAlign="center">
+        <Typography variant="body2" textAlign="center" sx={ivyParchmentHelperTextSx}>
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <Button
             variant="text"
+            color="primary"
             onClick={toggleAuthMode}
-            sx={{ color: "var(--primary-color)" }}
+            sx={{ fontWeight: 700, verticalAlign: "baseline", p: 0, minWidth: 0 }}
           >
             {isLogin ? "Sign Up Here" : "Log In Here"}
           </Button>
         </Typography>
-      </Box>
+      </Paper>
     </Modal>
   );
 };

@@ -18,7 +18,6 @@ const DateTimePicker = ({
 }: DateTimePickerProps) => {
   const currentDate = selectedDate || new Date();
   const monthIndex = currentDate.getMonth();
-  const month = MONTHS[monthIndex];
   const day = currentDate.getDate();
   const year = currentDate.getFullYear();
   const lastDayOfMonth = new Date(year, monthIndex + 1, 0).getDate();

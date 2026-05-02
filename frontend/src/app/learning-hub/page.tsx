@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container, Typography, Box, Tab, Tabs } from "@mui/material";
 import { useAuth } from "@/context/auth/authContext";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,6 @@ import StudyGroupForm from "@/components/learningHub/StudyGroupForms";
 import StudyGroupCarousel from "@/components/profile/StudyGroupCarousel";
 import TutorAvailabilityCards from "@/components/learningHub/TutorAvailbilityCards";
 import { useStudyGroup } from "@/context/studyGroup/studyGroupContext";
-import { useState } from "react";
 
 const LearningHub = () => {
   const { user, loading: authLoading } = useAuth();
@@ -14,7 +13,6 @@ const LearningHub = () => {
   const { studyGroups, getAllStudyGroups, joinStudyGroup } = useStudyGroup();
   const [activeTab, setActiveTab] = useState(0);
 
-  // Auth check and data fetching
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
@@ -27,32 +25,45 @@ const LearningHub = () => {
     }
   }, [user, authLoading, navigate, getAllStudyGroups]);
 
-  // Filter available study groups
   const availableStudyGroups = studyGroups.filter(
     (group) =>
       !group.participants.some((participant) => participant._id === user?._id)
   );
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
   if (authLoading || !user) return null;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }} role="main">
-      <Typography
-        variant="h4"
-        sx={{
-          fontFamily: "var(--font-heading)",
-          color: "var(--primary-color)",
-          fontWeight: 700,
-          mb: 4,
-          fontSize: { xs: "1.75rem", sm: "2.125rem" },
-        }}
-      >
-        Learning Hub
-      </Typography>
+    <Container
+      maxWidth="lg"
+      sx={{
+        py: { xs: 4, md: 8 },
+        px: { xs: 2, sm: 3 },
+      }}
+      role="main"
+    >
+      <Box sx={{ mb: { xs: 4, md: 5 } }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            fontWeight: 900,
+            letterSpacing: "-0.04em",
+            fontSize: { xs: "clamp(1.75rem, 5vw, 2.25rem)", md: "2.5rem" },
+            fontFamily: '"Cormorant Garamond", Georgia, serif',
+            background: (t) =>
+              `linear-gradient(95deg, ${t.palette.text.primary} 0%, ${t.palette.primary.main} 40%, ${t.palette.primary.light} 100%)`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          Learning Hub
+        </Typography>
+      </Box>
 
       <Tabs
         value={activeTab}
@@ -67,8 +78,8 @@ const LearningHub = () => {
           borderColor: "divider",
           "& .MuiTab-root": {
             textTransform: "none",
-            fontSize: { xs: "0.9rem", sm: "1.1rem" },
-            fontWeight: 500,
+            fontSize: { xs: "0.9rem", sm: "1rem" },
+            fontWeight: 700,
             minWidth: { xs: "auto", sm: 160 },
             px: { xs: 2, sm: 3 },
           },

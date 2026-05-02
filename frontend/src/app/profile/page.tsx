@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo, useState } from "react";
 import { useAuth } from "@/context/auth/authContext";
 import { useUser } from "@/context/users/userContext";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,6 @@ import ProfileDetails from "@/components/profile/ProfileDetails";
 import StudyGroups from "@/components/profile/StudyGroups";
 import TutorAvailability from "@/components/profile/TutorAvailability";
 import TutorSessions from "@/components/profile/TutorSessions";
-import { useState } from "react";
 
 const Profile = () => {
   const { user: authUser, loading: authLoading } = useAuth();
@@ -21,7 +20,6 @@ const Profile = () => {
   const navigate = useNavigate();
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
-  // Memoize the fetch operations
   const fetchData = useCallback(
     async (userId: string) => {
       try {
@@ -33,7 +31,6 @@ const Profile = () => {
     [fetchUser, getAllStudyGroups]
   );
 
-  // Auth check and data fetching
   useEffect(() => {
     if (!authLoading && authUser === null) {
       navigate("/");
@@ -42,7 +39,6 @@ const Profile = () => {
     }
   }, [authUser, authLoading, navigate, fetchData]);
 
-  // Memoize user's study groups
   const userStudyGroups = useMemo(() => {
     if (!user?._id || !studyGroups.length) return [];
     return studyGroups.filter((group) =>
@@ -51,16 +47,28 @@ const Profile = () => {
   }, [user?._id, studyGroups]);
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }} role="main">
-      {/* First row with two columns */}
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4, mb: 4 }}>
+    <Container
+      maxWidth="xl"
+      sx={{
+        py: { xs: 4, md: 8 },
+        px: { xs: 2, sm: 3 },
+      }}
+      role="main"
+    >
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", lg: "minmax(280px, 360px) minmax(0, 1fr)" },
+          gap: { xs: 4, lg: 5 },
+          alignItems: "start",
+        }}
+      >
         <ProfileDetails
           user={user}
           onEditClick={() => setOpenEditDialog(true)}
         />
 
-        {/* Study Groups & Tutor Sessions Column */}
-        <Box sx={{ flex: "1 1 65%" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0, minWidth: 0 }}>
           <StudyGroups
             user={user}
             userStudyGroups={userStudyGroups}

@@ -22,7 +22,9 @@ import {
   Hub,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { alpha } from "@mui/material/styles";
 import { useAuth } from "@/context/auth/authContext";
+import type { User } from "@/context/auth/authContext";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,22 +38,18 @@ const Navbar = () => {
 
   const toggleAuthMode = () => setIsLogin((prev) => !prev);
 
-  const renderLearningHubButton = (user) => {
-    if (!user || user.role !== "student") return null;
+  const renderLearningHubButton = (u: User | null) => {
+    if (!u || u.role !== "student") return null;
 
     return (
       <Button
         variant="outlined"
+        color="primary"
         sx={{
-          borderColor: "var(--primary-color)",
-          color: "var(--primary-color)",
           whiteSpace: "nowrap",
-          minWidth: "85px",
-          padding: "6px 14px",
-          "&:hover": {
-            backgroundColor: "var(--primary-color)",
-            color: "#fff",
-          },
+          minWidth: "88px",
+          py: 0.75,
+          borderColor: (t) => alpha(t.palette.primary.main, 0.45),
         }}
         aria-label="Go to Learning Hub"
         component={Link}
@@ -64,28 +62,27 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar
-        position="static"
-        sx={{
-          backgroundColor: "var(--background-color)",
-          boxShadow: "none",
-          borderBottom: "1px solid #CBD5E1",
-          px: 2,
-        }}
-      >
+      <AppBar position="sticky" sx={{ px: { xs: 1, sm: 2 } }}>
         <Toolbar
           sx={{
             display: { xs: "none", md: "flex" },
             justifyContent: "space-between",
             alignItems: "center",
+            minHeight: 72,
+            gap: 2,
           }}
         >
           <Typography
             variant="h6"
+            component="div"
             sx={{
-              fontFamily: "var(--font-heading)",
-              color: "var(--primary-color)",
-              fontWeight: 700,
+              fontFamily: '"Cormorant Garamond", Georgia, serif',
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "text.primary",
+              textShadow: (theme) =>
+                `0 1px 0 ${alpha("#000", 0.35)}, 0 0 48px ${alpha(theme.palette.primary.main, 0.25)}`,
             }}
           >
             <Link
@@ -97,7 +94,7 @@ const Navbar = () => {
             </Link>
           </Typography>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
             {loading ? (
               <Typography variant="body2" color="text.secondary">
                 Loading...
@@ -107,16 +104,11 @@ const Navbar = () => {
                 {renderLearningHubButton(user)}
                 <Button
                   variant="outlined"
+                  color="primary"
                   sx={{
-                    borderColor: "var(--primary-color)",
-                    color: "var(--primary-color)",
                     whiteSpace: "nowrap",
-                    minWidth: "85px",
-                    padding: "6px 14px",
-                    "&:hover": {
-                      backgroundColor: "var(--primary-color)",
-                      color: "#fff",
-                    },
+                    minWidth: "88px",
+                    borderColor: (t) => alpha(t.palette.primary.main, 0.45),
                   }}
                   aria-label="Go to profile"
                   component={Link}
@@ -126,13 +118,8 @@ const Navbar = () => {
                 </Button>
                 <Button
                   variant="contained"
-                  sx={{
-                    backgroundColor: "var(--primary-color)",
-                    whiteSpace: "nowrap",
-                    minWidth: "85px",
-                    padding: "6px 14px",
-                    "&:hover": { backgroundColor: "#172554" },
-                  }}
+                  color="primary"
+                  sx={{ whiteSpace: "nowrap", minWidth: "88px" }}
                   aria-label="Log out"
                   onClick={logout}
                 >
@@ -143,16 +130,11 @@ const Navbar = () => {
               <>
                 <Button
                   variant="outlined"
+                  color="primary"
                   sx={{
-                    borderColor: "var(--primary-color)",
-                    color: "var(--primary-color)",
                     whiteSpace: "nowrap",
-                    minWidth: "85px",
-                    padding: "6px 14px",
-                    "&:hover": {
-                      backgroundColor: "var(--primary-color)",
-                      color: "#fff",
-                    },
+                    minWidth: "88px",
+                    borderColor: (t) => alpha(t.palette.primary.main, 0.45),
                   }}
                   aria-label="Log in"
                   onClick={() => {
@@ -164,13 +146,8 @@ const Navbar = () => {
                 </Button>
                 <Button
                   variant="contained"
-                  sx={{
-                    backgroundColor: "var(--primary-color)",
-                    whiteSpace: "nowrap",
-                    minWidth: "85px",
-                    padding: "6px 14px",
-                    "&:hover": { backgroundColor: "#172554" },
-                  }}
+                  color="primary"
+                  sx={{ whiteSpace: "nowrap", minWidth: "88px" }}
                   aria-label="Sign up"
                   onClick={() => {
                     setIsLogin(false);
@@ -189,16 +166,22 @@ const Navbar = () => {
             display: { xs: "flex", md: "none" },
             justifyContent: "space-between",
             alignItems: "center",
+            minHeight: 64,
           }}
         >
           <Typography
             variant="h6"
+            component="div"
             sx={{
-              fontFamily: "var(--font-heading)",
-              color: "var(--primary-color)",
-              fontWeight: 700,
+              fontFamily: '"Cormorant Garamond", Georgia, serif',
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
               flexGrow: 1,
               textAlign: "center",
+              color: "text.primary",
+              textShadow: (theme) =>
+                `0 1px 0 ${alpha("#000", 0.35)}, 0 0 40px ${alpha(theme.palette.primary.main, 0.22)}`,
             }}
           >
             <Link
@@ -212,7 +195,8 @@ const Navbar = () => {
 
           <IconButton
             onClick={() => setMenuOpen(true)}
-            sx={{ color: "var(--primary-color)" }}
+            color="primary"
+            edge="end"
             aria-label="Open navigation menu"
           >
             <MenuIcon />
@@ -227,7 +211,7 @@ const Navbar = () => {
         role="navigation"
       >
         <Box
-          sx={{ width: 250 }}
+          sx={{ width: 280, pt: 2 }}
           role="presentation"
           onKeyDown={(e) => e.key === "Escape" && setMenuOpen(false)}
         >
@@ -247,7 +231,7 @@ const Navbar = () => {
                       aria-label="Go to Learning Hub"
                     >
                       <ListItemIcon>
-                        <Hub />
+                        <Hub color="primary" />
                       </ListItemIcon>
                       <ListItemText primary="Learning Hub" />
                     </ListItemButton>
@@ -261,7 +245,7 @@ const Navbar = () => {
                     aria-label="Go to profile page"
                   >
                     <ListItemIcon>
-                      <AccountCircle />
+                      <AccountCircle color="primary" />
                     </ListItemIcon>
                     <ListItemText
                       primary={`${capitalize(user.username)} Profile`}
@@ -277,7 +261,7 @@ const Navbar = () => {
                     aria-label="Log out"
                   >
                     <ListItemIcon>
-                      <Login />
+                      <Login color="primary" />
                     </ListItemIcon>
                     <ListItemText primary="Log Out" />
                   </ListItemButton>
@@ -295,7 +279,7 @@ const Navbar = () => {
                     aria-label="Log in"
                   >
                     <ListItemIcon>
-                      <Login />
+                      <Login color="primary" />
                     </ListItemIcon>
                     <ListItemText primary="Log In" />
                   </ListItemButton>
@@ -310,7 +294,7 @@ const Navbar = () => {
                     aria-label="Sign up"
                   >
                     <ListItemIcon>
-                      <PersonAdd />
+                      <PersonAdd color="primary" />
                     </ListItemIcon>
                     <ListItemText primary="Sign Up" />
                   </ListItemButton>

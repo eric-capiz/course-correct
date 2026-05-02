@@ -157,13 +157,11 @@ const StudyGroupForm = () => {
           <Button
             type="submit"
             variant="contained"
+            color="primary"
             fullWidth
             disabled={loading}
-            sx={{
-              py: 1.5,
-              backgroundColor: "var(--primary-color)",
-              "&:hover": { backgroundColor: "var(--button-primary-hover)" },
-            }}
+            size="large"
+            sx={{ py: 1.5 }}
           >
             {loading ? "Creating..." : "Create Study Group"}
           </Button>

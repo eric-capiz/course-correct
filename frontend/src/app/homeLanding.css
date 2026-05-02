@@ -1,0 +1,106 @@
+/* ═══ Home — Oxford / fellows’ lodge aesthetic (#home-page only) ═══ */
+/* Fonts load via index.html + globals.css */
+
+#home-page {
+  --ivy-display: "Cormorant Garamond", "Libre Baskerville", "Georgia", serif;
+  --ivy-text: "Source Serif 4", "Spectral", Georgia, serif;
+  --ivy-gold: #c9a962;
+  --ivy-oxford: #001f3d;
+}
+
+/* Cabinet-grade paper grain */
+#home-page .home-vellum {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.34;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='v'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23v)'/%3E%3C/svg%3E");
+}
+
+/* Precision lattice — genius / manuscript (barely visible) */
+#home-page .home-lattice {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image:
+    linear-gradient(rgba(201, 169, 98, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 169, 98, 0.12) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, black 15%, transparent 75%);
+}
+
+#home-page .home-vignette-college {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 160px 60px rgba(0, 0, 0, 0.55);
+}
+
+#home-page .ivy-display {
+  font-family: var(--ivy-display);
+  font-feature-settings: "kern" 1, "liga" 1, "dlig" 1;
+  text-rendering: optimizeLegibility;
+}
+
+#home-page .ivy-body {
+  font-family: var(--ivy-text);
+  font-feature-settings: "onum" 1, "kern" 1;
+}
+
+/* Burnished gold rule */
+#home-page .ivy-rule-gold {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 169, 98, 0.15),
+    rgba(223, 197, 122, 0.95),
+    rgba(201, 169, 98, 0.85),
+    rgba(223, 197, 122, 0.95),
+    rgba(201, 169, 98, 0.15),
+    transparent
+  );
+}
+
+/* Fellows’ binding — hairline vertical */
+#home-page .ivy-binding {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(201, 169, 98, 0.35) 15%,
+    rgba(201, 169, 98, 0.65) 50%,
+    rgba(201, 169, 98, 0.35) 85%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Folio card lift — leather-bound discretion */
+#home-page .ivy-folio-lift {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.55s ease;
+}
+
+#home-page .ivy-folio-lift:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 36px 90px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(201, 169, 98, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #home-page .ivy-folio-lift {
+    transition: none;
+  }
+  #home-page .ivy-folio-lift:hover {
+    transform: none;
+  }
+}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, Link } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 
 const Footer = () => {
   const [year, setYear] = useState("");
@@ -14,15 +15,17 @@ const Footer = () => {
       sx={{
         textAlign: "center",
         display: "flex",
-        flexDirection: "row",
+        flexDirection: { xs: "column", sm: "row" },
         alignItems: "center",
         justifyContent: "space-evenly",
+        gap: { xs: 2, sm: 0 },
         py: 3,
         px: 4,
-        mt: 4,
-        borderTop: "1px solid #CBD5E1",
-        backgroundColor: "var(--background-color)",
-        color: "var(--text-color)",
+        mt: "auto",
+        borderTop: (t) => `1px solid ${alpha(t.palette.primary.main, 0.28)}`,
+        bgcolor: (t) => alpha(t.palette.secondary.main, 0.55),
+        backdropFilter: "blur(16px)",
+        color: "text.secondary",
       }}
     >
       <Typography variant="body2" aria-live="polite">
@@ -36,9 +39,10 @@ const Footer = () => {
           target="_blank"
           rel="noopener noreferrer"
           sx={{
+            fontWeight: 700,
+            color: "primary.light",
             textDecoration: "none",
-            fontWeight: 500,
-            color: "var(--primary-color)",
+            "&:hover": { color: "primary.light", textDecoration: "underline" },
           }}
           aria-label="Visit Eric Capiz's portfolio in a new tab"
         >
@@ -48,7 +52,14 @@ const Footer = () => {
 
       <Typography
         variant="body2"
-        sx={{ fontStyle: "italic", color: "var(--secondary-color)" }}
+        sx={{
+          fontStyle: "italic",
+          background: (t) =>
+            `linear-gradient(90deg, ${alpha(t.palette.text.secondary, 1)} 0%, ${t.palette.primary.main} 45%, ${t.palette.primary.light} 100%)`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
       >
         <em>Learn, Connect, Succeed.</em>
       </Typography>

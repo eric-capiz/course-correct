@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Typography, Box, Card, CardContent, Button } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import TutorCalendar from "@/components/calendar/TutorCalendar";
 import AddAvailabilitySlot from "@/components/calendar/AddAvailabilitySot";
 import { useTutorAvailability } from "@/context/tutorAvailability/tutorAvailabilityContext";
+import { ivyBodyMutedSx } from "@/components/profile/ivyProfileCards";
+import { ivyTokens } from "@/theme/tokens";
 
 interface TutorAvailabilityProps {
   user: {
@@ -32,7 +35,18 @@ const TutorAvailability = ({ user }: TutorAvailabilityProps) => {
 
   return (
     <Box sx={{ mb: { xs: 4, md: 12 } }}>
-      <Typography variant="h5" fontWeight={700} mt={6} mb={2} id="availability">
+      <Typography
+        variant="h5"
+        fontWeight={700}
+        mt={6}
+        mb={2}
+        id="availability"
+        sx={{
+          fontFamily: '"Cormorant Garamond", Georgia, serif',
+          letterSpacing: "0.02em",
+          color: "text.primary",
+        }}
+      >
         Your Availability
       </Typography>
 
@@ -66,13 +80,8 @@ const TutorAvailability = ({ user }: TutorAvailabilityProps) => {
                 >
                   <Button
                     variant="contained"
+                    color="primary"
                     onClick={() => setShowAddForm(true)}
-                    sx={{
-                      backgroundColor: "var(--primary-color)",
-                      "&:hover": {
-                        backgroundColor: "var(--button-primary-hover)",
-                      },
-                    }}
                   >
                     Add Slot
                   </Button>
@@ -96,19 +105,18 @@ const TutorAvailability = ({ user }: TutorAvailabilityProps) => {
                           sx={{
                             p: 2,
                             mb: 1,
-                            border: 1,
-                            borderColor: "divider",
                             borderRadius: 1,
+                            border: `1px solid ${alpha(ivyTokens.gold, 0.32)}`,
+                            bgcolor: alpha(ivyTokens.ink, 0.04),
                           }}
                         >
-                          <Typography variant="subtitle1">
+                          <Typography
+                            variant="subtitle1"
+                            sx={{ fontWeight: 700, color: alpha(ivyTokens.ink, 0.92) }}
+                          >
                             {slot.subject}
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 0.5 }}
-                          >
+                          <Typography variant="body2" sx={{ ...ivyBodyMutedSx, mb: 0.5 }}>
                             {displayDate.toLocaleDateString("en-US", {
                               weekday: "long",
                               month: "long",
@@ -116,13 +124,13 @@ const TutorAvailability = ({ user }: TutorAvailabilityProps) => {
                               year: "numeric",
                             })}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography variant="body2" sx={ivyBodyMutedSx}>
                             {new Date(slot.startTime).toLocaleString("en-US", {
                               hour: "numeric",
                               minute: "numeric",
                               hour12: true,
                             })}{" "}
-                            -
+                            –
                             {new Date(slot.endTime).toLocaleString("en-US", {
                               hour: "numeric",
                               minute: "numeric",
@@ -134,13 +142,15 @@ const TutorAvailability = ({ user }: TutorAvailabilityProps) => {
                     })}
                   </Box>
                 ) : (
-                  <Typography color="text.secondary">
+                  <Typography sx={ivyBodyMutedSx}>
                     No availability slots for this day
                   </Typography>
                 )}
               </>
             ) : (
-              <Typography>Select a date to view or add availability</Typography>
+              <Typography sx={ivyBodyMutedSx}>
+                Select a date to view or add availability
+              </Typography>
             )}
           </CardContent>
         </Card>

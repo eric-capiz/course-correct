@@ -1,23 +1,52 @@
+/* Fonts: index.html (Cormorant Garamond + Source Serif 4) */
+
 :root {
-  /* Primary Theme Colors */
-  --primary-color: #1e3a8a; /* Midnight Blue */
-  --secondary-color: #475569; /* Slate Gray */
-  --accent-color: #facc15; /* Warm Yellow */
+  /* Ivy / Oxford — aligned with src/theme/tokens */
+  --ivy-oxford: #001f3d;
+  --ivy-midnight: #05080e;
+  --ivy-panel: #0a121f;
+  --ivy-parchment: #f5f1e8;
+  --ivy-ivory: #faf8f4;
+  --ivy-ink: #1a1512;
+  --ivy-verse-muted: #9aabbd;
+  --ivy-gold: #c9a962;
+  --ivy-gold-bright: #dfc57a;
+  --ivy-gold-burnished: #9e8348;
+  --ivy-rule: rgba(201, 169, 98, 0.28);
 
-  /* Background & Text */
-  --background-color: #f8fafc;
-  --background-light: #ffffff;
-  --text-color: #1e293b;
+  /* Legacy names — map to ivy so existing components stay on-brand */
+  --cc-bloom: var(--ivy-gold);
+  --cc-violet: var(--ivy-oxford);
+  --cc-rose: #c45c6a;
+  --cc-gold: var(--ivy-gold);
+  --cc-mint: #6b9b7a;
+  --cc-void: var(--ivy-midnight);
+  --cc-void-deep: var(--ivy-midnight);
+  --cc-elevated: var(--ivy-panel);
+  --cc-chrome: var(--ivy-ivory);
+  --cc-muted: var(--ivy-verse-muted);
+  --cc-line: var(--ivy-rule);
+  --cc-glass: rgba(255, 255, 255, 0.05);
 
-  /* Button Colors */
-  --button-primary-bg: var(--primary-color);
-  --button-primary-hover: #172554;
-  --button-secondary-bg: var(--secondary-color);
-  --button-secondary-hover: #334155;
+  --primary-color: var(--ivy-gold);
+  --secondary-color: var(--ivy-verse-muted);
+  --accent-color: var(--ivy-gold-bright);
+  --background-color: var(--ivy-midnight);
+  --background-light: var(--ivy-panel);
+  --text-color: var(--ivy-ivory);
+  --text-light: var(--ivy-ivory);
+  --text-muted: var(--ivy-verse-muted);
+  --button-primary-bg: var(--ivy-gold);
+  --button-primary-hover: #b89750;
+  --button-secondary-bg: var(--ivy-oxford);
+  --button-secondary-hover: #001428;
 
-  /* Typography */
-  --font-body: "Inter", Arial, sans-serif;
-  --font-heading: "Poppins", sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+}
+
+html {
+  color-scheme: dark;
 }
 
 html,
@@ -25,17 +54,50 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   color: var(--text-color);
-  background: var(--background-color);
+  background: var(--ivy-midnight);
   font-family: var(--font-body);
-  padding: 20px;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle page canvas (non-home routes) */
+.app-main-canvas {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.app-main-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 100% 55% at 50% 0%,
+    rgba(201, 169, 98, 0.07) 0%,
+    transparent 58%
+  );
+}
+
+.app-main-canvas > * {
+  position: relative;
+  z-index: 1;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 a {
@@ -44,5 +106,15 @@ a {
 }
 
 button {
-  transition: all 0.3s ease;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  button {
+    transition: none;
+  }
 }
