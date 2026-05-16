@@ -1,4 +1,5 @@
 import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { ivyParchmentTextFieldSx } from "@/components/profile/ivyProfileCards";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -105,7 +106,7 @@ const DateTimePicker = ({
         },
       }}
     >
-      <FormControl>
+      <FormControl sx={ivyParchmentTextFieldSx}>
         <InputLabel>Month</InputLabel>
         <Select
           value={monthIndex}
@@ -119,7 +120,7 @@ const DateTimePicker = ({
         </Select>
       </FormControl>
 
-      <FormControl>
+      <FormControl sx={ivyParchmentTextFieldSx}>
         <InputLabel>Day</InputLabel>
         <Select
           value={day}
@@ -133,7 +134,7 @@ const DateTimePicker = ({
         </Select>
       </FormControl>
 
-      <FormControl>
+      <FormControl sx={ivyParchmentTextFieldSx}>
         <InputLabel>Time</InputLabel>
         <Select
           value={

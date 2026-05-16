@@ -11,6 +11,10 @@ import {
 } from "@mui/material";
 import { useTutorAvailability } from "@/context/tutorAvailability/tutorAvailabilityContext";
 import DateTimePicker from "./DateTimePicker";
+import {
+  ivyParchmentAlertSx,
+  ivyParchmentTextFieldSx,
+} from "@/components/profile/ivyProfileCards";
 
 interface AddAvailabilitySlotProps {
   selectedDate: Date;
@@ -113,12 +117,12 @@ const AddAvailabilitySlot = ({
       </Typography>
 
       {(error || formError) && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ ...ivyParchmentAlertSx, mb: 2 }}>
           {formError || error}
         </Alert>
       )}
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      <FormControl fullWidth sx={{ ...ivyParchmentTextFieldSx, mb: 2 }}>
         <InputLabel>Subject</InputLabel>
         <Select
           value={selectedSubject}

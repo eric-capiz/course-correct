@@ -15,6 +15,7 @@ import { Close, Visibility, VisibilityOff } from "@mui/icons-material";
 import { alpha } from "@mui/material/styles";
 import { useAuth } from "@/context/auth/authContext";
 import {
+  ivyParchmentAlertSx,
   ivyParchmentHelperTextSx,
   ivyParchmentIconButtonSx,
   ivyParchmentTextFieldSx,
@@ -161,7 +162,7 @@ const AuthModal = ({
         </Typography>
 
         {error && (
-          <Alert severity="error" sx={{ mb: 1 }}>
+          <Alert severity="error" sx={{ ...ivyParchmentAlertSx, mb: 1 }}>
             {error}
           </Alert>
         )}

@@ -145,6 +145,19 @@ export const ivyParchmentHelperTextSx: SxProps<Theme> = {
   color: alpha(t.ink, 0.62),
 };
 
+export const ivyParchmentAlertSx: SxProps<Theme> = {
+  color: t.ink,
+  backgroundColor: alpha("#c45c6a", 0.16),
+  border: `1px solid ${alpha("#8f2f3d", 0.38)}`,
+  "& .MuiAlert-icon": {
+    color: "#8f2f3d",
+  },
+  "& .MuiAlert-message": {
+    color: t.ink,
+    fontWeight: 600,
+  },
+};
+
 /** Close / accessory icon on parchment surfaces */
 export const ivyParchmentIconButtonSx: SxProps<Theme> = {
   color: alpha(t.ink, 0.55),

@@ -19,7 +19,11 @@ import {
   Alert,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { ivyBodyMutedSx, ivyParchmentTextFieldSx } from "@/components/profile/ivyProfileCards";
+import {
+  ivyBodyMutedSx,
+  ivyParchmentAlertSx,
+  ivyParchmentTextFieldSx,
+} from "@/components/profile/ivyProfileCards";
 
 interface User {
   _id: string;
@@ -291,6 +295,7 @@ const EditProfileDialog = ({
                 severity="error"
                 aria-live="polite"
                 sx={{
+                  ...ivyParchmentAlertSx,
                   mt: 2,
                   width: "100%",
                 }}

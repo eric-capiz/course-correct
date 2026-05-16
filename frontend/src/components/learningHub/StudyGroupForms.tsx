@@ -10,6 +10,10 @@ import {
 } from "@mui/material";
 import { useStudyGroup } from "@/context/studyGroup/studyGroupContext";
 import DateTimePicker from "@/components/calendar/DateTimePicker";
+import {
+  ivyParchmentAlertSx,
+  ivyParchmentTextFieldSx,
+} from "@/components/profile/ivyProfileCards";
 
 const StudyGroupForm = () => {
   const { createStudyGroup, loading, getAllStudyGroups } = useStudyGroup();
@@ -78,7 +82,7 @@ const StudyGroupForm = () => {
         </Typography>
 
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ ...ivyParchmentAlertSx, mb: 2 }}>
             {error}
           </Alert>
         )}
@@ -100,7 +104,7 @@ const StudyGroupForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              sx={{ mb: 2 }}
+              sx={{ ...ivyParchmentTextFieldSx, mb: 2 }}
               placeholder="e.g., Calculus Study Session"
             />
 
@@ -112,7 +116,7 @@ const StudyGroupForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, subject: e.target.value })
               }
-              sx={{ mb: 2 }}
+              sx={{ ...ivyParchmentTextFieldSx, mb: 2 }}
               placeholder="e.g., Calculus, Physics, Literature"
             />
 
@@ -125,7 +129,7 @@ const StudyGroupForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              sx={{ mb: 2 }}
+              sx={{ ...ivyParchmentTextFieldSx, mb: 2 }}
               placeholder="Describe what you'll be studying..."
             />
           </Box>
@@ -146,7 +150,7 @@ const StudyGroupForm = () => {
             onChange={(e) =>
               setFormData({ ...formData, duration: e.target.value })
             }
-            sx={{ mb: 3 }}
+            sx={{ ...ivyParchmentTextFieldSx, mb: 3 }}
             inputProps={{
               min: "15",
               step: "15",
